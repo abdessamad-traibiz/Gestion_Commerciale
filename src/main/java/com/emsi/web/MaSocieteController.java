@@ -41,7 +41,7 @@ public class MaSocieteController
 		return "masociete";
 	}
 	
-	@RequestMapping(value= {"/masociete/update"}, method=RequestMethod.POST)
+	@RequestMapping(value= {"/updatemasociete"}, method=RequestMethod.POST)
 	public String updatemasociete( @Valid Fournisseur fournisseur, BindingResult result, Model model ) 
 	{
 		if(saveFournisseur(fournisseur,result,model)) 
@@ -50,7 +50,7 @@ public class MaSocieteController
 		return masociete(model);
 	}
 	
-	@RequestMapping(value= {"/masociete/logo/update"}, method=RequestMethod.POST)
+	@RequestMapping(value= {"/updatelogo"}, method=RequestMethod.POST)
 	public String updatemasociete(@RequestParam("logo") MultipartFile file, Model model) 
 	{
 		fileUpload(file);

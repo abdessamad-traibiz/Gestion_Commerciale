@@ -47,7 +47,7 @@ public class FournisseurController
 	
 	
 
-	@RequestMapping(value= {"/fournisseurs/add"}, method=RequestMethod.POST)
+	@RequestMapping(value= {"/addfournisseur"}, method=RequestMethod.POST)
 	public String addFournisseur(@Valid Fournisseur fournisseur, BindingResult result, Model model) 
 	{    	
 		metierFournisseur.getFournisseur(fournisseur.getCode());
@@ -61,7 +61,7 @@ public class FournisseurController
 		return index(model,0,8,"");
 	}
 	 
-	@RequestMapping(value="/fournisseurs/update",method=RequestMethod.POST)
+	@RequestMapping(value="/updatefournisseur",method=RequestMethod.POST)
 	public String updateFournisseur(@Valid Fournisseur fournisseur, BindingResult result, Model model) 
 	{    
 		if(saveFournisseur(fournisseur,result,model)) 
@@ -85,7 +85,7 @@ public class FournisseurController
 	}
 	
  
-	@RequestMapping(value="/fournisseurs/delete")
+	@RequestMapping(value="/deletefournisseur")
 	public String deleteFournisseur(Model model,@RequestParam(name="code",defaultValue="0")String code) 
 	{  
 		metierFournisseur.deleteFournisseur(code);
@@ -97,7 +97,7 @@ public class FournisseurController
 	
 	
 	
-	@RequestMapping(value="/fournisseurs/get", method=RequestMethod.POST,produces = "application/json")
+	@RequestMapping(value="/getfournisseur", method=RequestMethod.POST,produces = "application/json")
 	public @ResponseBody Fournisseur getroduit(@RequestParam(name="code")String code) 
 	{  
 		Fournisseur frs = metierFournisseur.getFournisseur(code);  

@@ -24,9 +24,9 @@
 <div layout:fragment="body"> 
 	
 	<script type="text/javascript">$("#page").html('Statistiques')</script>
-	<div  sec:authorize="hasAnyRole('ROLE_ADMIN','ROLE_SHOW_STATISTIQUES')"  class="container-fluid"> 
+	<div class="container-fluid  bg-dark"> 
 				
-			<div class="">
+			<div class="card bg-dark">
 				
 				<div class="card-body row" > 
 					<div class="col-md-2 pr-0">
@@ -126,10 +126,10 @@
 					
 					</div>
 				
-					<div class="col p-0 py-4">  
+					<div class="col py-4">  
 						
 						<div class="mt row">  
-								<div class="col p-0">
+								<div class="col">
 									<div class="row" id="rowCharts1">  
 										<div id="d1" class="col-md-6">&nbsp;
 											<div class="chart" id="chart-ventes"></div></div>  
@@ -140,7 +140,7 @@
 						</div>
 						
 						<div class="mt-5 row">  
-								<div class="col p-0">
+								<div class="col">
 									<div class="row"  id="rowCharts2">  
 										<div class="col-md-6 ">&nbsp;
 										<div class="chart" id="chart-achats"></div>
@@ -153,7 +153,7 @@
 						
 						
 						<div class="mt-5 row">  
-								<div class="col p-0">
+								<div class="col">
 									<div id="infosSP"></div>
 									<div class="row" id="rowPies">  
 										<div class="col-md-6" >

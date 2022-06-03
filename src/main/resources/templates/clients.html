@@ -8,36 +8,33 @@
 <title>Clients</title>
 
 
-<script sec:authorize="hasAnyRole('ROLE_ADMIN','ROLE_UPDATE_CLIENTS')" > 
+<script>
+
 	function openNavFormulaireUpdateClient(id) { 
 		if(id!=null)getClient(id);
-		$("#listeClients").toggleClass("col-md-8");
 		$("#formulaireNouveauClient").hide();
 		$("#formulaireUpdateClient").show();
 	} 
 	
 	function closeNavFormulaireUpdateClient() { 
-		$("#listeClients").toggleClass("col-md-8");
 	    $("tr").css("background-color","");
 		$("#formulaireUpdateClient").hide();
 	} 
 	
-	function openNavFormulaireNouveauClient() { 
-		$("#listeClients").toggleClass("col-md-8"); 
+	function openNavFormulaireNouveauClient() {  
 		$("tr").css("background-color","");
 		$("#formulaireUpdateClient").hide(); 
 		$("#formulaireNouveauClient").show();
 	} 
 	
-	function closeNavFormulaireNouveauClient() {
-		$("#listeClients").toggleClass("col-md-8"); 
+	function closeNavFormulaireNouveauClient() { 
 		$("#formulaireNouveauClient").hide(); 
 	} 
 	
 	function getClient(id)
 	{ 
 		$.ajax({ 
-			url : wwwpath+"/clients/get", 
+			url : wwwpath+"/getclient", 
 			data : {    code : id  }, 
 			type : "POST",
 			dataType : "json",  
@@ -69,18 +66,15 @@
 <div layout:fragment="body"> 
 	 <script type="text/javascript">$("#page").html('Clients')</script>
 	 
-	<div class="container-fluid"  sec:authorize="hasAnyRole('ROLE_ADMIN','ROLE_SHOW_CLIENTS')"> 
+	<div class="container-fluid"> 
 				
-			<div class="card bg-gradient">
+			<div class="card bg-gradient"> 
+				<div class="card-body" >
 				
-				<div class="card-header text-center">Clients</div> 
-				<div class="card-body p-4" >
-				
-					<div class="col">
-						<div class="alert alert-success text-success" th:if="${updateOk}" th:text="${updateOk}"></div>
-						<div class="alert alert-success text-primary" th:if="${addOk}" th:text="${addOk}"></div>
-						<div class="alert alert-danger text-danger" th:if="${deleteOk}" th:text="${deleteOk}"></div>
-					</div>
+					<div class="alert-warning text-success" th:if="${updateOk}" th:text="${updateOk}"></div>
+					<div class="alert-warning text-primary" th:if="${addOk}" th:text="${addOk}"></div>
+					<div class="alert-warning text-danger" th:if="${deleteOk}" th:text="${deleteOk}"></div>
+
 
 					<div class="row py-4">
 						<form th:action="@{/clients}" class="col p-0">
@@ -116,7 +110,7 @@
 							
 		         	<div class="row">
 			         	
-			         	<div  sec:authorize="hasAnyRole('ROLE_ADMIN','ROLE_UPDATE_CLIENTS')" id="formulaireNouveauClient" class="col-md-4" style="display:none" >
+			         	<div  sec:authorize="hasRole('ROLE_ADMIN')" id="formulaireNouveauClient" class="col-md-4" style="display:none" >
 					 
 				          	<div class="card">
 					            <div class="card-header">
@@ -126,7 +120,7 @@
 				  					</a>
 					            </div>
 					            <div class="card-body"> 
-									<form method="post" th:action="@{/clients/add}">
+									<form method="post" th:action="@{/addclient}">
 										<table class="table"> 
 										  <tbody>
 										  	<tr>
@@ -211,7 +205,7 @@
 											<th>Adresse</th>
 											<th>E-mail</th>
 											<th>Tél.</th>
-											<th  sec:authorize="hasAnyRole('ROLE_ADMIN','ROLE_UPDATE_CLIENTS')">
+											<th  sec:authorize="hasRole('ROLE_ADMIN')">
 												<a class="btn btn-info btn-sm text-light" 
 													onclick="openNavFormulaireNouveauClient()">
 													<i class="fa fa-plus"></i> 
@@ -230,8 +224,8 @@
 											<td th:text="${frs.adresse}"></td>
 											<td th:text="${frs.email}"></td>
 											<td th:text="${frs.tel}"></td> 
-											<td  sec:authorize="hasAnyRole('ROLE_ADMIN','ROLE_UPDATE_CLIENTS')">
-												<a class="btn-danger btn-sm"  th:href="@{clients/delete(code=${frs.code})}" ><i class="fa fa-remove"></i></a>
+											<td  sec:authorize="hasRole('ROLE_ADMIN')">
+												<a class="btn-danger btn-sm"  th:href="@{deleteclient(code=${frs.code})}" ><i class="fa fa-remove"></i></a>
 												<a id="btnEdit" class="btn-primary btn-sm text-light"  th:onclick="'openNavFormulaireUpdateClient(\''+${frs.code}+'\')'"><i class="fa fa-edit"></i></a>
 											</td>
 										</tr>
@@ -248,7 +242,7 @@
 				           	</div>
 			         	</div>  
 		         	
-			         	<div  sec:authorize="hasAnyRole('ROLE_ADMIN','ROLE_UPDATE_CLIENTS')" id="formulaireUpdateClient" class="col-md-4" style="display:none" > 
+			         	<div  sec:authorize="hasRole('ROLE_ADMIN')" id="formulaireUpdateClient" class="col-md-4" style="display:none" > 
 				          	<div class="card">
 					            <div class="card-header">
 					            	Mise à jour du client
@@ -257,7 +251,7 @@
 				  					</a>
 					            </div>
 					            <div class="card-body"> 
-									<form method="post" th:action="@{/clients/update}" name="formulaireUpdateClient">
+									<form method="post" th:action="@{/updateclient}" name="formulaireUpdateClient">
 							       		<input th:value="${client.code}" type="hidden" name="code" class="form-control  form-control-sm">
 										
 										<table class="table"> 

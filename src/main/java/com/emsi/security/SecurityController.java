@@ -3,31 +3,36 @@ package com.emsi.security;
 
 import java.security.Principal;
 
-import javax.servlet.RequestDispatcher;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import com.emsi.imetier.IDossierMetier;
 import com.emsi.imetier.IFournisseurMetier;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.web.servlet.error.ErrorController;
-import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
-import org.springframework.stereotype.Controller; 
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 
 @Controller
-public class SecurityController implements ErrorController  
+public class SecurityController 
 {
 
 	@Autowired private HttpSession session;
 	@Autowired private IFournisseurMetier mf;
+	@Autowired private IDossierMetier metierDos;
 	
-
+	
+	@RequestMapping("/") public String index(Model model)
+	{
+		model.addAttribute("dossiers", metierDos.getDossiers());
+		return "index";
+	}
 	
 	@RequestMapping(value="/logout", method = RequestMethod.GET)
 	public String logoutPage (HttpServletRequest request, HttpServletResponse response) 
@@ -50,31 +55,10 @@ public class SecurityController implements ErrorController
 	@RequestMapping("/403") public String forbidden()
 	{
 		return "403";
-	} 
-	
-	@RequestMapping("/404") public String notfound()
-	{
-		return "404";
-	} 
-	
-	
-	@RequestMapping("/error")
-    public String handleError(HttpServletRequest request) {
-	    Object status = request.getAttribute(RequestDispatcher.ERROR_STATUS_CODE);
-	
-	    if (status != null) {
-	        Integer statusCode = Integer.valueOf(status.toString());
-	
-	        if(statusCode == HttpStatus.NOT_FOUND.value()) {
-	            return "404";
-	        } 
-	    }
-	    return "error";
 	}
 	
-	 @Override
-	    public String getErrorPath() {
-	        return "/error";
-	    }
-}  
- 
+	@RequestMapping("/*") public String notfound()
+	{
+		return "404";
+	}
+}

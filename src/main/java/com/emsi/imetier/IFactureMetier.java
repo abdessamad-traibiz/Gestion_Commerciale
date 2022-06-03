@@ -3,9 +3,10 @@ package com.emsi.imetier;
 import java.util.Date;
 import java.util.List;
 
-import com.emsi.entities.Facture;
 import org.springframework.data.domain.Page;
 
+import com.emsi.entities.Facture;
+ 
 
 public interface IFactureMetier 
 {  

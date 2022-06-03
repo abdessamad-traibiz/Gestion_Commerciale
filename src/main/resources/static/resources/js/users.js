@@ -1,6 +1,8 @@
 
 	function openFormulaireUpdateUser(id) { 
-		if(id!=null) getUser(id); 
+		if(id!=null) getUser(id);
+		$("#formulaireNouveauUser").hide();
+		$("#formulaireUpdateUser").show();
 	} 
 	
 	function closeFormulaireUpdateUser() { 
@@ -8,10 +10,7 @@
 		$("#formulaireUpdateUser").hide();
 	} 
 	
-	function openFormulaireNouveauUser() {   
-		document.fnu.action="/users/add";
-		$("#titleForm").html("Nouveau utilisateur");
-		$("#updateusername").val(""); 
+	function openFormulaireNouveauUser() {  
 		$("tr").css("background-color","");
 		$("#formulaireUpdateUser").hide(); 
 		$("#formulaireNouveauUser").show();
@@ -19,42 +18,25 @@
 	
 	function closeFormulaireNouveauUser() { 
 		$("#formulaireNouveauUser").hide(); 
-		$("tr").css("background-color","");
-		clearRoles();
 	} 
 	
 	function getUser(un)
-	{  
+	{ 
 		$.ajax({ 
-			url : wwwpath+"/users/get", 
-			data : {    username : un  }, 
+			url : wwwpath+"/users/getuser", 
+			data : {    username : un+''  }, 
 			type : "POST",
 			dataType : "json",  
 			success : function( json ) {  
-				console.log(json);
-				 
-				openFormulaireNouveauUser();
-				$("#titleForm").html("Mise à jour : "+un); 
-				$("#updateusername").val(un);   
-				$(document.fnu.username).attr("readonly","1");
-				document.fnu.action="/users/update";
-				
-				document.fnu.username.value=json.username;   
-				document.fnu.active.value = json.active;
-				
-				clearRoles();
-				$(json.roles).each(function( index ) { 
-					addUserRole(this.role.role,this.role.id);
-				}); 
-						
+				$("#usernameUserToUpdate").html(json.username); 
+				document.formulaireUpdateUser.username.value=json.username; 
+				document.formulaireUpdateUser.lastUsername.value=json.username;  
+				$("#formulaireUpdateUser input[value='"+json.active+"']").prop('checked', true);
 				$("tr").css("background-color","");
-				$("#tr"+un).css("background-color", "#AAF");
+				$("#tr"+un).css("background-color", "yellow");
 			},
-			error : function( xhr, status ) { 
-				console.log(xhr);
-				alert("Erreur dans le serveur..."); 
-			} 
-		}); 
+			error : function( xhr, status ) { alert("Erreur dans le serveur..."); } 
+		});
 	}
 	
 	
@@ -65,8 +47,7 @@
 		$("#td1_"+id).html( $("<i class='fa fa-check text-success  float-right'>") ); 
 		$("#br_"+id).remove();
 		$("#td2_"+id).append( 
-			$("<a id='br_"+id+"' class='fa fa-minus text-light btn-sm btn-secondary float-right' " +
-					"onclick='removeUserRole(\""+role+"\",\""+id+"\")'>")
+			$("<a id='br_"+id+"' class='fa fa-minus text-light btn-sm btn-secondary float-right' onclick='removeUserRole(\""+role+"\","+id+")'>")
 		);	 
 	}
 	function addUserRole(role,id)
@@ -97,7 +78,7 @@
 	        type: "POST",
 	        url: wwwpath+"/users/removeuserrole",
 	        dataType: "json",
-	        data: { "role": role},
+	        data: { "role": role,"id":id },
 	        success: function (result) 
 	        {   
 				$("#ba_"+id).show();
@@ -107,11 +88,6 @@
 	        },
 	        error:function(xhr, status){ alert("error serveur !"); console.log(xhr); }
 		});
-	}
-	
-	function clearRoles(){
-		$("#divAddedRoles").html(""); 
-		$.ajax({ type: "POST",url: wwwpath+"/users/clearroles"});
 	}
 	
 	function updateRole(id)

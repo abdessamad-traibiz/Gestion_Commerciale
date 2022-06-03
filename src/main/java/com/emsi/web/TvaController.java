@@ -19,7 +19,7 @@ public class TvaController
 {
 	@Autowired private ITvaMetier metierTva;
 	
-	@RequestMapping(value= {"/tva/save"}, method=RequestMethod.POST,produces = "application/json")
+	@RequestMapping(value= {"/savetva"}, method=RequestMethod.POST,produces = "application/json")
 	public @ResponseBody Tva saveTva(@Valid Tva tva) 
 	{    	  
 		System.out.println(tva.getDesignation()+" : "+tva);
@@ -27,14 +27,14 @@ public class TvaController
 		return tva; 
 	} 
  
-	@RequestMapping(value="/tva/delete", method=RequestMethod.POST,produces = "application/json")
+	@RequestMapping(value="/deletetva", method=RequestMethod.POST,produces = "application/json")
 	public @ResponseBody Boolean deleteTva(@RequestParam(name="code",defaultValue="0")Long code) 
 	{  
 		if(metierTva.deleteTva(code)) return true;  
 		return false;
 	}
 	
-	@RequestMapping(value="/tva/get", method=RequestMethod.POST,produces = "application/json")
+	@RequestMapping(value="/gettva", method=RequestMethod.POST,produces = "application/json")
 	public @ResponseBody Tva getroduit(@RequestParam(name="code")Long code) 
 	{  
 		Tva tva = metierTva.getTva(code); 

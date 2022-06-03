@@ -1,7 +1,7 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org"
-	  xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" xmlns:sec="http://www.w3.org/1999/xhtml"
-	  layout:decorator="template">
+<html  	xmlns:th="http://www.thymeleaf.org"
+		xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	    layout:decorator="template">
 	    
 <head> 
 	<meta charset="utf-8">
@@ -15,10 +15,15 @@
 	<div class="container-fluid"> 
 				
 			<div class="card">
-				 <div class="card-header text-center">Utilisateurs</div>
-				<div class="card-body p-3" >
-
 				
+				
+				<div class="card-body" >
+				
+					<div class="alert-warning text-success" th:if="${updateOk}" th:text="${updateOk}"></div>
+					<div class="alert-warning text-primary" th:if="${addOk}" th:text="${addOk}"></div>
+					<div class="alert-warning text-danger" th:if="${deleteOk}" th:text="${deleteOk}"></div>
+
+
 					<div class="row py-4">
 						<form th:action="@{/users}" class="col p-0">
 							<input type="hidden" name="size" th:value="${size}" />
@@ -50,13 +55,6 @@
 					</div>
 					
 					
-					<div class="col">
-					<div class="alert alert-success text-success" th:if="${updateOk}">L'utilisateur est mise à jour !</div>
-					<div class="alert alert-success text-primary" th:if="${addOk}">Le nouveau utilisateur est ajouté !</div>
-					<div class="alert alert-danger text-danger" th:if="${deleteOk}">L'utilisateur est supprimé !</div>
-					</div>
-					
-					
 							
 		         	<div class="row">
 			         	
@@ -64,14 +62,13 @@
 					 
 				          	<div class="card">
 					            <div class="card-header">
-					            	<span id="titleForm">Nouveau utilisateur</span>
+					            	Nouveau utilisateur
         					  		<a href="javascript:closeFormulaireNouveauUser();" class="closebtn" style="border:none; float:right" onclick="closeFormulaireNouveauUser()">
 				  					<i class="fa fa-close"></i>
 				  					</a>
 					            </div>
 					            <div class="card-body"> 
-									<form method="post" name="fnu" th:action="@{/users/add}" >
-										<input id="updateusername" value="" type="hidden" />
+									<form method="post" name="fnu" th:action="@{/users/add}">
 										<table class="table"> 
 										  <tbody>
 										  	<tr>
@@ -98,12 +95,13 @@
 										    		<label class="btn-sm btn-dark" id="label1">
 										    			<input value="false" name="active" type="radio" />
 										    			 <i class="fa fa-close"></i>
-									    			 </label> 
+									    			 </label>
+										    	 
 											       	<p th:errors="${user.active}" class="text-danger"></p> 
 									       		</td>
 										    </tr>
 										    <tr>
-										      <td><b>Permissions</b></td>
+										      <td><b>Roles</b></td>
 										      <td>
 										      	<div id="divAddedRoles" class="float-left"> 
 										      		<div th:each="r:${rolesUser}" th:id="'divAddedRole'+${r.id}">
@@ -112,7 +110,7 @@
 										      		</div>
 										      	</div>
 										      	<a class="btn btn-sm btn-primary text-light  float-right" 
-										      		onclick="$('#modalRoles').modal('show');">&#9776;</a>
+										      		onclick="$('#modalRoles').modal('show');">AJOUTER</a>
 										      	<p th:errors="${user.roles}" class="text-danger"></p>
 										      </td>
 										    </tr>
@@ -122,10 +120,8 @@
 										      <td>
 										      <span th:if="${alert}" th:text="${alert}"></span>
 										      <br>
-										      	<table class="w-100"><tr>
-										      		<td class="p-1"><a class="w-100 btn btn-light" onclick="closeFormulaireNouveauUser()">Annuler</a></td>
-										      		<td class="p-1"><button class="w-100 btn btn-primary" type="submit">Enregistrer</button></td>
-									      		</tr></table> 
+										      	<a class="btn btn-light" onclick="closeFormulaireNouveauUser()">Annuler</a>
+										        <button class="btn btn-primary" type="submit">Enregistrer</button>
 										      </td>
 										    </tr>
 										  </tbody>
@@ -144,7 +140,7 @@
 											<th></th>
 											<th>Nom d'utilisateur</th>
 											<th>Active</th>
-											<th>Permissions</th> 
+											<th>Roles</th> 
 											<th>
 												<a class="btn btn-info btn-sm text-light" 
 													onclick="openFormulaireNouveauUser()">
@@ -158,16 +154,16 @@
 											<td></td>
 											<td th:text="${user.username}"></td>
 											<td th:if="${user.active}"><i class='fa fa-check  text-success'></i></td>
-											<td th:if="!${user.active}"><i class='fa fa-close'></i></td>
+											<td th:if="!${user.active}"><i class='fa'></i></td>
 											<td>
 												<div  th:each="ur:${user.roles}">
 							   						<i class="fa fa-check"></i>  
-							   						<span th:text="${ur.role.designation}"></span> <!-- ${ur.role.role}=='ADMIN'? 'ADMINISTRATEUR': (${ur.role.role}=='USER'?'UTILISATEUR':${ur.role}) -->
+							   						<span th:text="${ur.role}=='ADMIN'? 'ADMINISTRATEUR': (${ur.role}=='USER'?'UTILISATEUR':${ur.role})"></span>
 							   					</div>
 											</td> 
 											<td>
+												<a class="btn-danger btn-sm"  th:href="@{deleteuser(username=${user.username})}" ><i class="fa fa-remove"></i></a>
 												<a id="btnEdit" class="btn-primary btn-sm text-light"  th:onclick="'openFormulaireUpdateUser(\''+${user.username}+'\')'"><i class="fa fa-edit"></i></a>
-												<a class="btn-danger btn-sm text-light" th:onclick="'deleteVerification(\''+${user.username}+'\')'" ><i class="fa fa-remove"></i></a> 
 											</td>
 										</tr>
 									</tbody>
@@ -214,11 +210,11 @@
 										    <tr>
 										      	<td><b>Active </b></td>
 										      	<td>  
-										    		<label class="btn-sm btn-success" >
+										    		<label class="btn-sm btn-success" id="label2">
 										    			<input name="active" type="radio" value="true" checked/> 
 										    			 <i class="fa fa-check"></i>
 									    			</label> 
-										    		<label class="btn-sm btn-dark" >
+										    		<label class="btn-sm btn-dark" id="label1">
 										    			<input name="active" type="radio" value="false" />
 										    			 <i class="fa fa-close"></i>
 									    			 </label>
@@ -227,7 +223,7 @@
 									       		</td>
 										    </tr>
 										    <tr>
-										      <td><b>Permissions</b></td>
+										      <td><b>Roles</b></td>
 										      <td>
 										      	<a class="btn btn-sm btn-primary text-light float-right" 
 										      		onclick="$('#modalRoles').modal('show');">AJOUTER</a>
@@ -256,7 +252,7 @@
 	</div>
 		  
 	<script th:if="${addFailed}" > openFormulaireNouveauUser(); </script> 
-	<script th:if="${updateFailed}" th:inline="javascript" > openFormulaireUpdateUser([[${user.username}]]); </script> 
+	<script th:if="${updateFailed}" > openFormulaireUpdateUser(); </script> 
 
 
 	
@@ -265,15 +261,14 @@
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title " id="exampleModalLabel"> 
-		    	Permissions  
-		    	<a class=" btn btn-warning float-right" th:href="@{/roles}">Voir permissions</a>
+		    	Roles  
         </h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
-      	<div class="modal-body" style="max-height:400px;overflow-y:scroll"> 
-      		<!-- div>
+      	<div class="modal-body"> 
+      		<div>
       			<table class="table pb-0" style="border:none"><tr>
       				<td style="border:none">Nouveau role : </td>
       				<td style="border:none">
@@ -287,26 +282,26 @@
 					</td> 
       			<tr></table>
       			<br>
-      		</div -->
+      		</div>
       		<div id="alertRole" style="display:none" class="alert alert-warning mt-0">
       			<span></span>
       			<i class="fa fa-close btn-sm btn-warning float-right" 
       				onclick="$('#alertRole').hide();"></i>
       		</div>
-        	<table class="table" id="tableRoles" > 
+        	<table class="table" id="tableRoles"> 
         	<tr th:each="role:${roles}" th:id="'trRole'+${role.id}" > 
 				<td>
 					<div>
 						<a th:onclick="'showUR('+${role.id}+')'" class="fa-cog fa btn-sm btn-light"></a>
-						<!-- span class="su" style="display:none">
+						<span class="su" style="display:none">
 							<a th:onclick="'hideUR('+${role.id}+')'" class="fa fa-close btn-sm btn-light mr-2"></a>
 							<input th:value="${role}" />
 							<a th:href="'javascript:updateRole(\''+${role.id}+'\')'"
 								class="fa fa-check btn-sm btn-primary"></a> 
 							<a th:onclick="'deleteRole('+${role.id}+')'"
 								class="fa fa-trash btn-sm btn-danger text-light"></a>
-						</span --> 
-						<span class="sr" th:text="${role.designation}"></span>
+						</span> 
+						<span class="sr" th:text="${role}"></span>
 					</div>
 				</td>
 				<td th:id="'td1_'+${role.id}"></td>
@@ -321,22 +316,21 @@
         	 
         	<form name="frur">
         	<div style="display:none" th:each="r:${rolesUser}">  
-	   			<script type="text/javascript" th:inline="javascript">
-	   				showAddedOk([[${r.id}]],[[${r.role}]]);
-	   			</script>
+	   			<script type="text/javascript" th:language="${r}" 
+	   					th:text="'showAddedOk('+${r.id}+')'"></script>
       		</div>
       		</form>
       		
       		<script type="text/javascript">
 	      		function showUR(id){    
-	      			//$("#trRole"+id+" div>a").hide();
-	      			//$("#trRole"+id+" span[class='sr']").hide(); 
-	      			//$("#trRole"+id+" span[class='su']").show(); 
+	      			$("#trRole"+id+" div>a").hide();
+	      			$("#trRole"+id+" span[class='sr']").hide(); 
+	      			$("#trRole"+id+" span[class='su']").show(); 
 	      		}
 	      		function hideUR(id){  
-	      			//$("#trRole"+id+" div>a").show();
-	      			//$("#trRole"+id+" span[class='sr']").show(); 
-	      			//$("#trRole"+id+" span[class='su']").hide(); 
+	      			$("#trRole"+id+" div>a").show();
+	      			$("#trRole"+id+" span[class='sr']").show(); 
+	      			$("#trRole"+id+" span[class='su']").hide(); 
 	      		}
       		</script> 
 		</div>  
@@ -347,38 +341,6 @@
  </div> 
     </div>
   </div>
-  
-<div class="modal fade" id="modalVerification" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-  <div class="modal-dialog modal-md" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title " id="">
-		    	Verification  
-        </h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      	<div class="modal-body" style="max-height:400px;overflow-y:scroll"> 
-      		<h4>Suppression d'utilisateur <span id="spaniduser"></span> ?</h4> 
-		</div>  
-		<div class="modal-footer" style="border:none"> 
-			<a id="aiduser" class="btn btn-sm btn-danger">Supprimer</a> 
-        	<a class="btn btn-sm btn-secondary text-light" data-dismiss="modal">Annuler</a>
-		</div>   
-</div> 
-</div>
-</div>
-<script type="text/javascript">
-	function deleteVerification(un) 
-	{
-		$('#modalVerification').modal('show');
-		$('#spaniduser').html(un);
-		$('#aiduser').attr('href','/users/delete?username='+un);
-	}
-</script>
-  
-  
 </div>	
 	
 </div>  

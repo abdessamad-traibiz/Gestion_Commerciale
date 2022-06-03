@@ -5,7 +5,6 @@ import java.util.List;
 
 import javax.transaction.Transactional;
 
-import com.emsi.entities.Facture;
 import com.emsi.imetier.IFactureMetier;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -13,6 +12,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import com.emsi.dao.FactureRepository;
+import com.emsi.entities.Facture;
 
 
 @Service
@@ -23,7 +23,7 @@ public class FactureMetierImpl implements IFactureMetier
 	@Autowired private FactureRepository fctRep; 
 	
 	@Override
-	public List<Facture> getFactures() {
+	public List<Facture> getFactures() { 
 		return fctRep.findAll();
 	}
 

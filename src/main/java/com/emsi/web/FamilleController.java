@@ -19,21 +19,21 @@ public class FamilleController
 {
 	@Autowired private IFamilleMetier metierFamille;
 	
-	@RequestMapping(value= {"/familles/save"}, method=RequestMethod.POST,produces = "application/json")
+	@RequestMapping(value= {"/savefamille"}, method=RequestMethod.POST,produces = "application/json")
 	public @ResponseBody Famille saveFamille(@Valid Famille famille) 
 	{    	  
 		metierFamille.saveFamille(famille);  
 		return famille; 
 	} 
  
-	@RequestMapping(value="/familles/delete", method=RequestMethod.POST,produces = "application/json")
+	@RequestMapping(value="/deletefamille", method=RequestMethod.POST,produces = "application/json")
 	public @ResponseBody Boolean deleteFamille(@RequestParam(name="code",defaultValue="0")Long code) 
 	{  
 		if(metierFamille.deleteFamille(code)) return true;  
 		return false;
 	}
 	
-	@RequestMapping(value="/familles/get", method=RequestMethod.POST,produces = "application/json")
+	@RequestMapping(value="/getfamille", method=RequestMethod.POST,produces = "application/json")
 	public @ResponseBody Famille getroduit(@RequestParam(name="code")Long code) 
 	{  
 		Famille famille = metierFamille.getFamille(code); 

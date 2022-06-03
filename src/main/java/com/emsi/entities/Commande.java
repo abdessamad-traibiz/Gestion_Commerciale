@@ -13,8 +13,6 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.validation.constraints.NotNull;
 
-import org.hibernate.annotations.NotFound;
-import org.hibernate.annotations.NotFoundAction;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.lang.Nullable;
  
@@ -36,13 +34,11 @@ public class Commande  implements Serializable
 	@ManyToOne
 	@JoinColumn(name="CODE_CLIENT")
 	@Nullable 
-	@NotFound(action = NotFoundAction.IGNORE)
 	private Client client;
 	
 	@ManyToOne 
 	@JoinColumn(name="CODE_FOURNISSEUR")
 	@Nullable  
-	@NotFound(action = NotFoundAction.IGNORE)
 	private Fournisseur fournisseur;
 	
 	@OneToMany(mappedBy="commande",fetch=FetchType.LAZY)
@@ -52,7 +48,6 @@ public class Commande  implements Serializable
 	
 	@ManyToOne
 	@JoinColumn(name="NUM_DOSSIER")
-	@NotFound(action = NotFoundAction.IGNORE)
 	private Dossier dossier;
 	
 	

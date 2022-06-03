@@ -12,8 +12,6 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 
-import org.hibernate.annotations.NotFound;
-import org.hibernate.annotations.NotFoundAction;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.lang.Nullable;
  
@@ -34,13 +32,11 @@ public class Facture  implements Serializable
 	@ManyToOne
 	@JoinColumn(name="CODE_CLIENT")
 	@Nullable
-	@NotFound(action = NotFoundAction.IGNORE)
 	private Client client;
 	
 	@ManyToOne 
 	@JoinColumn(name="CODE_FOURNISSEUR")
 	@Nullable
-	@NotFound(action = NotFoundAction.IGNORE)
 	private Fournisseur fournisseur;
 	
 	@ManyToOne
@@ -63,7 +59,6 @@ public class Facture  implements Serializable
 
 	@ManyToOne
 	@JoinColumn(name="NUM_DOSSIER")
-	@NotFound(action = NotFoundAction.IGNORE)
 	private Dossier dossier;
 	
 	public Facture() {

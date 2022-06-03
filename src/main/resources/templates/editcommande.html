@@ -26,22 +26,16 @@
 
 <body>
 <div layout:fragment="body" >  
-<script type="text/javascript">$("#page").append('Commandes')</script>  
-	 	<script type="text/javascript" th:inline="javascript">
-		$("#page").parent().after('<li><a href="#">Mise à jour</a></li>'); 
-		$("#page").parent().after('<li><a href="#">Commande &numero;'+[[${commande.numero}]]+'</a></li>');
-		</script> 
-		
 			<div class="card bg-gradient">
 				<div class="card-header" > 
 		         	Mise à jour du commande
 				</div>
 				
-				<div class="card-body p-4" >
+				<div class="card-body" >
 				
-					<div class="alert alert-success text-success" th:if="${updateOk}" th:text="${updateOk}"></div>
-					<div class="alert alert-success text-primary" th:if="${addOk}" th:text="${addOk}"></div>
-					<div class="alert alert-danger text-danger" th:if="${deleteOk}" th:text="${deleteOk}"></div>
+					<div class="alert-warning text-success" th:if="${updateOk}" th:text="${updateOk}"></div>
+					<div class="alert-warning text-primary" th:if="${addOk}" th:text="${addOk}"></div>
+					<div class="alert-warning text-danger" th:if="${deleteOk}" th:text="${deleteOk}"></div>
 
 					<div  class=""> 
 		         	<div class="row">
@@ -50,7 +44,7 @@
 					 
 				          	<div class="card"> 
 					            <div class="card-body"> 
-									<form method="post" th:action="@{/commandes/update}">
+									<form method="post" th:action="@{/updatecommande}">
 									<div th:if="${updateField}" th:text="${updateField}" class="alert-danger"></div>
 										<table class="table"> 
 										  <tbody>
@@ -64,7 +58,7 @@
 										    <tr>
 										      <td><b>Date</b><br><small class="alert-danger">DD/MM/YYYY</small></td>
 										      <td>
-										        <input th:value="${commande.dateCommande}?${#dates.format(commande.dateCommande, 'yyyy-MM-dd')}" type="date" name="dateCommande" 
+										        <input th:value="${commande.dateCommande}" type="text" name="dateCommande" 
 										        class="form-control">
 										        <p th:errors="${commande.dateCommande}" class="text-danger"></p></td>
 										    </tr>
@@ -108,7 +102,7 @@
 										      <td>
 										      <span th:if="${alert}" th:text="${alert}"></span>
 										      <br>
-										      	<a th:href="@{/commandes/delete(numero=${commande.numero})}" class="btn btn-danger">Supprimer</a>
+										      	<a th:href="@{deletecommande(numero=${commande.numero})}" class="btn btn-danger">Supprimer</a>
 										        <button class="btn btn-success" type="submit">Enregistrer</button>
 										      </td>
 										    </tr>
@@ -122,7 +116,7 @@
 			         	
 			         	<div class="col pt-2" id="listeLignes"> 
 			         		<h6>Ajouter une ligne :</h6> 
-			         			<form name="formStoreLc" method="post" th:action="@{/commandes/ligne/add}">
+			         			<form name="formStoreLc" method="post" th:action="@{/addlignecommande}">
 			         			<input type="hidden" name="commande" th:value="${commande.numero}" />
 			         			<div th:if="${exception}" th:text="${exception.message}" class="alert-danger"></div> 
 					        	<div th:if="${addLcOk}" th:text="${addLcOk}" class="alert-success"></div>
@@ -172,7 +166,7 @@
 											<td th:text="${ligne.produit.prix}"></td> 
 											<td th:text="${ligne.qte}"></td>  
 											<td>
-												<a class="btn btn-danger btn-sm"  th:href="@{/commandes/ligne/delete(id=${ligne.id},numCommande=${commande.numero})}" ><i class="fa fa-remove"></i></a>
+												<a class="btn btn-danger btn-sm"  th:href="@{deletelignecommande(id=${ligne.id},numCommande=${commande.numero})}" ><i class="fa fa-remove"></i></a>
 												<a th:onclick="'editLigne(\''+${ligne.produit.ref}+'\')'" class="btn btn-primary btn-sm text-light"><i class="fa fa-edit"></i></a>
 											</td>
 										</tr>
@@ -183,7 +177,7 @@
 					          	<ul class="pagination bg-dark" style="border-radius:0">
 									<li th:each="pa,status:${pages}" class="nav-item">
 										<a 	th:class="${status.index}==${pageCourant}?'active nav-link ':'nav-link '" 
-											th:href="@{/commandes/get(numero=${commande.numero}, page=${status.index},size=${size},motCle=${motCle})}" th:text="${status.index}+1"></a>
+											th:href="@{/commande(numero=${commande.numero}, page=${status.index},size=${size},motCle=${motCle})}" th:text="${status.index}+1"></a>
 									</li>
 								</ul> 
 				           	</div>

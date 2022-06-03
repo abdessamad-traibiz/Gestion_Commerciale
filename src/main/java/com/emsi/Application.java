@@ -6,18 +6,15 @@ import com.emsi.imetier.IClientMetier;
 import com.emsi.imetier.IFournisseurMetier;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.web.servlet.ServletComponentScan;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.format.FormatterRegistry; 
+import org.springframework.format.FormatterRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
  
 
 @SpringBootApplication
 @ServletComponentScan
-@Configuration
-@EnableAutoConfiguration
 public class Application {
 
 	public static void main(String[] args) {
@@ -32,7 +29,6 @@ public class Application {
 	    public void addFormatters(FormatterRegistry registry) { 
 	    	registry.addConverter(new ClientConverter(mc));
 	    	registry.addConverter(new FournisseurConverter(mf));
-	    }  	    
-	} 
-	 
+	    }
+	}
 }

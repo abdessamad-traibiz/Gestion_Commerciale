@@ -10,8 +10,6 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.validation.constraints.Size;
 
-import org.hibernate.annotations.NotFound;
-import org.hibernate.annotations.NotFoundAction;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.lang.Nullable; 
 
@@ -34,7 +32,6 @@ public class Dossier  implements Serializable
 	
 	@ManyToOne
 	@JoinColumn(name="USERNAME") 
-	@NotFound(action = NotFoundAction.IGNORE)
 	private User user;
 	
 	public Dossier() { }

@@ -6,18 +6,18 @@
 <head>
 <meta charset="utf-8">
 <title>Accueil</title>
-<style type="text/css">.card{padding: 25px} </style>  
+<style type="text/css">.card{padding: 25px} .card{background: #212529} #dossier li{}</style>  
 </head>
 
 <body >
 <div layout:fragment="body">
-<script type="text/javascript">$("#page").html('Tableau de bord')</script>
-<div  sec:authorize="hasAnyRole('ROLE_ADMIN','ROLE_SHOW_DASHBOARD')"  class="col"> 
+<script type="text/javascript">$("#page").html('Dashboard')</script>
+<div class="col card bg-dark"> 
 		 
 	 	<div class="row mt-3">
-	 		<div class="col m-0 p-0">
+	 		<div class="col">
 			 	<div class="row">
-			 		<div style="min-width:250px" class="col card   border border-info">
+			 		<div class="col card bg-dark text-light border border-secondary">
 						
 			 			<div class="title">
 			 				Commandes
@@ -32,7 +32,7 @@
 						</small>
 						<small class="text-secondary">Le mois dernier</small>
 			 		</div>
-			 		<div  style="min-width:250px" class="col card ml-4   border border-info"> 
+			 		<div class="col card ml-4 bg-dark text-light border border-secondary"> 
 			 			<div class="title">
 			 				Quantité vendu
 			 				<a class="bg-light btn text-primary float-right">
@@ -49,7 +49,7 @@
 			 		</div>
 			 	</div> 
 			 	<div class="row mt-3">
-					<div style="min-width:250px" class="col card mr-4 border border-info">
+					<div class="col card mr-4 bg-dark text-light border border-secondary">
 			 			
 			 			<div class="title">
 			 				Revenue
@@ -63,7 +63,7 @@
 							<span id="resRev"></span>%</small>
 						<small class="text-secondary">Le mois dernier</small>
 			 		</div>
-			 		<div style="min-width:250px" class="col card border border-info"> 
+			 		<div class="col card bg-dark text-light border border-secondary"> 
 			 			<div class="title">
 			 				La croissance
 			 				<a class="bg-light btn text-primary float-right">
@@ -79,7 +79,7 @@
 			 		</div>
 			 	</div> 
 			 </div>
-			 <div style="min-width:300px;max-height:500px;min-height:300px" class="col pr-0">
+			 <div class="col">
 			 	<div  id="divStatistique"></div>
 			 	<a href="javascript:void(0)" onclick="getStatistiquesChart();"
 			 		style="position:absolute;top:5px;right:20px">
@@ -87,70 +87,27 @@
 			 	</a>
 			 </div>
 	 	</div>
-	 	 
 	 	
-	 	<div class="py-5 row">
+	 	<div class="pt-5 row">
 	 		<div class="col pl-0">
-	 			<h5 class=" text-info mb-3">Les plus vendus...</h5> 
+	 			<h5 class=" text-info">Les plus vendus...</h5> 
 	 			<table class="table table-hover table-dark table-striped border border-dark">
 	 				<thead>
 	 					<tr>
 	 						<th>Produit</th> <th>Prix</th> <th>Quantité</th> 
-	 						<th>  
+	 						<th> 
+			 					<i class="fa fa-refresh btn-sm text-success border border-success float-right" 
+			 						onclick="getMostSelled()"></i>
 	 							<span class="float-left">Total</span>
 	 						</th>
-	 						<th>  
-	 						<i class="fa fa-refresh btn-sm text-success border border-success float-right" 
-			 						onclick="getMostSelled()"></i>
-			 				</th>
 	 					</tr>
 	 				</thead>
 	 				<tbody id='tableProduits'></tbody>
 	 			</table>
-	 		</div>
-	 		<div style="min-width:300px;max-height:500px;min-height:300px" class="col pl-0   pr-0"> 
-	 			<div style="position:asbsolute;tosp:5px;rigsht:20px">
-					
-						<select id="selectDay" onchange="getAllStocks()"
-							style="background: transparent;" class="border border-success  p-1">
-								<option value="" class='alert-success'>Jour</<option>
-								<option class='alert-success' th:each="i: ${#numbers.sequence(1, 31)}" th:text="${i}"></<option>
-						</select>
-						
-						<select id="selectMois" onchange="getAllStocks()"
-							style="background: transparent;" class="border border-success  p-1">
-								<option value="" class='alert-success'>Mois</<option>
-						</select>
-						<select id="selectAnne" onchange="getAllStocks()"
-							style="background: transparent;" class="border border-success  p-1">
-								<!-- option value="" class='alert-success'>Année</<option-->
-						      	<option class='alert-success' th:each="i: ${#numbers.sequence(#dates.year(#dates.createNow()), 2016)}" th:text="${i}"></<option>
-						</select>
-						
-						<select id="selectProduit" onchange="getAllStocks()"
-							style="background: transparent;" class="border border-success  p-1">
-							<option value="" class='alert-success'>Produit...</<option>
-							<option class='alert-success' th:each="i: ${produits}"  th:value="${i.ref}" th:text="${i.designation}"></option>
-						</select>
-						
-						<a  class="p-1 border border-success text-success"
-							onclick="getAllStocks();" >
-							&nbsp;<i class="fa fa-check"></i>&nbsp;</a>
-						<script type="text/javascript">
-							var ms = ["Janvier", "Février", "Mars", "Avril", "Mai", "Juin", "Juillet", "Aout", "Septembre", "Octobre", "Novembre", "Décembre"];
-							for(var i=0;i<12;i++)
-								$("#selectMois").append("<option class='alert-success' value='"+(i+1)+"'>"+ms[i]+"</option>");
-						</script>
-					</div> 
-				<div style='height:400px' class="mt-2">
-					<div  id="divStocks"></div> 
-				</div>
-	 		</div>  
+	 		</div> 
 	 	</div>
 	 	
-	 	<div class="clear-fix p-5"></div>
-	 	<style>#menu .card{min-width:250px}</style>
-	 	<div id="menu">
+	 	<div>
 	 			<div class="card-deck text-center opaque-overlay py-5 row1"> 
 				  <div class="card border-primary"> 
 				  	<a th:href="@{/statistiques}">
@@ -287,74 +244,6 @@ function createCharts(data, nom,subnom,idDiv, type)
 			});
 } 
 
-function createStocksCharts(data, nom,subnom,idDiv, type)
-{
-	const dataSource = {
-			  "chart": {
-				  "caption": nom, 
-				    "xaxisname": "Mois",
-				    "yaxisname": "Total TTC(MAD)",
-				    "formatnumberscale": "1",
-				    "plottooltext": "<b>$dataValue</b> produits de <b>$seriesName</b> en $label",
-				    "theme": "fusion",
-				    "drawcrossline": "1",
-
-			      	"toolTipBgColor": "#fff",
-			    	"toolTipColor": "#000", 
-			        "bgColor": "#343a40",  
-			        "showValues": "0", 
-			        "bgAlpha": "100", 
-			        "rotatevalues": "1",  
-			        "divLineIsDashed": "1",
-			        "showAlternateHGridColor": "0",
-			        "baseFontColor": "#FFF",   
-			        "canvasBaseColor": "#343a40",
-			        "canvasBgColor": "#343a40",
-			        "legendBgColor": "#FFF",
-			        "legendItemFontColor": "#000"
-			  },
-				"categories": data.categories,
-				"dataset":data.dataset
-			};
-
-			FusionCharts.ready(function() {
-			   var myChart = new FusionCharts({
-			      type: "msline",
-			      renderAt: idDiv,
-			      width: "100%",
-			      height: "100%",
-			      dataFormat: "json",
-			      dataSource
-			   }).render();
-			});
-} 
-
-
-function getAllStocks()
-{  
-	var year = $('#selectAnne').val();
-	var month = $('#selectMois').val();
-	var day = $('#selectDay').val();
-	
-	if($('#selectProduit').val()!="") {
-		getStocks();
-		return;
-	}
-	
-	$.ajax({ 
-		url : wwwpath+"/statistiques/getallstocks",  
-		data : { a: year, m:month, j:day }, 
-		type : "POST",
-		dataType : "json",  
-		success : function( data ) {    
-			createStocksCharts(data,"Variation du Stock pour l'année "+
-					year+(month!=""?" Mois "+month:"")+(day!=""?" Jour "+day:""), "Stock de produit "
-					,'divStocks',"Mois","Quantités" );  
-		},
-		error : function( xhr, status ) { alert("Erreur dans le serveur..."); } 
-	});
-} 
-
 
 function getStatistiquesChart()
 {
@@ -363,12 +252,11 @@ function getStatistiquesChart()
 	var an = date.getFullYear();   
 	 
 	$.ajax({ 
-		url : wwwpath+"/statistiques/getglobalstatistiques",  
+		url : wwwpath+"/getglobalstatistiques",  
 		data : { m: mo, a: an }, 
 		type : "POST",
 		dataType : "json",  
-		success : function( json ) {  
-			console.log(json);
+		success : function( json ) {   
 			$("#nbrCmd").html(json.nbrCmd);
 			$("#resCmd").html(json.resCmd.toFixed(2));
 			if(json.resCmd<0){
@@ -409,12 +297,12 @@ function getStatistiquesGlobal()
 	var an = date.getFullYear();   
 	 
 	$.ajax({ 
-		url : wwwpath+"/statistiques/getStatistiquesAV",  
+		url : wwwpath+"/getStatistiquesAV",  
 		data : { m: mo, a: an }, 
 		type : "POST",
 		dataType : "json",  
-		success : function( data ) {  
-			//console.log((data));
+		success : function( data ) { 
+			console.log(data);
 			createCharts(data, "REVENUES", "Ventes/Achats", 'divStatistique',"Revenues(MAD)" );  
 		},
 		error : function( xhr, status ) { alert("Erreur dans le serveur..."); } 
@@ -422,10 +310,10 @@ function getStatistiquesGlobal()
 }
 
 function getMostSelled()
-{ 
+{
 	var date = new Date();  
 	$.ajax({ 
-		url : wwwpath+"/statistiques/getmostselled",  
+		url : wwwpath+"/getmostselled",  
 		data : { m: date.getMonth()+1, a:  date.getFullYear() }, 
 		type : "POST",
 		dataType : "json",  
@@ -435,90 +323,16 @@ function getMostSelled()
 			{
 				var tr = 
 					"<tr><td>"+data.produits[i]+"</td> <td>"+data.prixs[i]+"</td>"
-					+"<td>"+data.qtes[i]+"</td> <td>"+data.ttcs[i]+"</td>"
-					+"<td><i onclick=\"$('#selectProduit').val('"+data.ids[i]+"');getStocks()\" class='btn btn-success btn-sm fa fa-bar-chart  float-right' aria-hidden='true'></i></td> </tr>"; 
+					+"<td>"+data.qtes[i]+"</td> <td>"+data.ttcs[i]+"</td></tr>"; 
 				$("#tableProduits").append(tr);
-			} 
+			}
 		},
 		error : function( xhr, status ) { alert("Erreur dans le serveur..."); } 
 	});
 }
-
-
-
-function createChartStocks(nom,subnom,data, idDiv, axisx, axisy, type)
-{
-	if(type==null) type = 'line';
-	var fsize = "8";
-	var visitChart = new FusionCharts({
-    type: type,
-    renderAt: idDiv,
-    width: '100%',
-    height: '100%', 
-    dataFormat: 'json',
-    dataSource: {
-      "chart": {
-      	"toolTipBgColor": "#fff",
-    	"toolTipColor": "#000",
-        "theme": "fusion",
-        "caption": nom,
-        "subCaption": subnom,
-        "xAxisName": axisx,
-        "yAxisName": axisy, 
-        "captionFontColor": "#AFF",
-        "captionAlignment": "left",
-        "bgColor": "#343a40",  
-        "showValues": "0",
-        "usePlotGradientColor": "0",
-        "plotBorderAlpha": "0",
-        "bgAlpha": "100",
-        "placevaluesInside": "1",
-        "rotatevalues": "1", 
-        "showXAxisLine": "1",
-        "xAxisLineColor": "#999999",
-        "divlineColor": "#999999",
-        "divLineIsDashed": "1",
-        "showAlternateHGridColor": "0",
-        "baseFontColor": "#FFF",    
-        "showBorder": "1",
-        "canvasBaseColor": "#343a40",
-        "canvasBgColor": "#343a40",
-        "drawcrossline": "1",
-      },
-      "data": data
-    }
-  });
-
-  visitChart.render();
-  
-  return visitChart;
-} 
-
-function getStocks()
-{ 
-	var ref = $('#selectProduit').val();
-	var year = $('#selectAnne').val();
-	var month = $('#selectMois').val();
-	var day = $('#selectDay').val();
-	
-	$.ajax({ 
-		url : wwwpath+"/statistiques/getstocks",  
-		data : { ref: ref, a: year, m:month, j:day }, 
-		type : "POST", 
-		dataType : "json",  
-		success : function( data ) {  
-			createChartStocks("Variation du Stock pour l'année "+
-					year+(month!=""?" Mois "+month:"")+(day!=""?" Jour "+day:""), "Stock de produit "+ref, 
-					data,'divStocks',"Mois","Quantités" );  
-		},
-		error : function( xhr, status ) { alert("Erreur dans le serveur..."); } 
-	});
-}
-
 
 getStatistiquesChart();
-getMostSelled(); 
-getAllStocks();
+getMostSelled();
 </script>	
 </div> 
 </div> 

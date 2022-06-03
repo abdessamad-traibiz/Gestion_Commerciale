@@ -1,24 +1,18 @@
 package com.emsi.entities;
  
-import java.io.Serializable;
-
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
-
 @Entity
-public class Role implements Serializable
+public class Role 
 {
-	@Id @NotNull @GeneratedValue Long id;
+	@Id @GeneratedValue Long id;
 	
-	//@Size(min=3,max=100)  
+	@Size(min=3,max=100) @NotNull
 	 private String role;
-	
-	//@Size(min=3,max=100) 
-	 private String designation;
 
 	public Role() {} 
 
@@ -28,16 +22,6 @@ public class Role implements Serializable
 	public String getRole() { return role; } 
 	public void setRole(String role) { this.role = role; }
 	@Override public String toString() {return role;}
-
-	
-	
-	public String getDesignation() {
-		return designation;
-	}
-
-	public void setDesignation(String designation) {
-		this.designation = designation;
-	}
 
 	public Long getId() {
 		return id;

@@ -2,9 +2,10 @@ package com.emsi.imetier;
 
 import java.util.List;
 
-import com.emsi.entities.Produit;
 import org.springframework.data.domain.Page;
 
+import com.emsi.entities.Produit;
+ 
 
 public interface IProduitMetier 
 { 

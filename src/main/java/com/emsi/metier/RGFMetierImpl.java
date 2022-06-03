@@ -2,12 +2,12 @@ package com.emsi.metier;
 
 import javax.transaction.Transactional;
 
-import com.emsi.entities.ReglementFacture;
 import com.emsi.imetier.IRGFMetier;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.emsi.dao.ReglementFactureRepository;
+import com.emsi.entities.ReglementFacture;
 
 
 @Service

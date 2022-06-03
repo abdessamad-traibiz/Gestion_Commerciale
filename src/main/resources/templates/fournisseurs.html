@@ -8,16 +8,14 @@
 <title>Fournisseurs</title>
 
 
-<script sec:authorize="hasAnyRole('ROLE_ADMIN','ROLE_UPDATE_FOURNISSEURS')" >
+<script sec:authorize="hasRole('ROLE_ADMIN')" >
 	function openNavFormulaireUpdateFournisseur(id) { 
-		if(id!=null)getFournisseur(id); 
-		$("#listeFournisseurs").toggleClass("col-md-8");
+		if(id!=null)getFournisseur(id);
 		$("#formulaireNouveauFournisseur").hide();
 		$("#formulaireUpdateFournisseur").show();
 	} 
 	
-	function closeNavFormulaireUpdateFournisseur() {  
-		$("#listeFournisseurs").toggleClass("col-md-8");
+	function closeNavFormulaireUpdateFournisseur() { 
 	    $("tr").css("background-color","");
 		$("#formulaireUpdateFournisseur").hide();
 	} 
@@ -35,7 +33,7 @@
 	function getFournisseur(id)
 	{ 
 		$.ajax({ 
-			url : wwwpath+"/fournisseurs/get", 
+			url : wwwpath+"/getfournisseur", 
 			data : {    code : id  }, 
 			type : "POST",
 			dataType : "json",  
@@ -62,20 +60,16 @@
 <div layout:fragment="body"> 
 	 <script type="text/javascript">$("#page").html('Fournisseurs')</script>
 	 
-	<div class="container-fluid"  sec:authorize="hasAnyRole('ROLE_ADMIN','ROLE_SHOW_FOURNISSEURS')" > 
+	<div class="container-fluid"> 
 				
 			<div class="card bg-gradient"> 
-				<div class="card-header text-center">Fournisseurs</div>
-				<div class="card-body p-4" >
-					
-					<div class="col" sec:authorize="hasAnyRole('ROLE_ADMIN','ROLE_UPDATE_FOURNISSEURS')"> 
-						<div class="alert alert-success text-success" th:if="${updateOk}" th:text="${updateOk}"></div>
-						<div class="alert alert-success text-primary" th:if="${addOk}" th:text="${addOk}"></div>
-						<div class="alert alert-danger text-danger" th:if="${deleteOk}" th:text="${deleteOk}"></div>
-					</div>
-					
+				<div class="card-body" >
+				
+					<div class="alert-warning text-success" th:if="${updateOk}" th:text="${updateOk}"></div>
+					<div class="alert-warning text-primary" th:if="${addOk}" th:text="${addOk}"></div>
+					<div class="alert-warning text-danger" th:if="${deleteOk}" th:text="${deleteOk}"></div>
+
 					<div class="row py-4">
-						
 						<form th:action="@{/fournisseurs}" class="col p-0">
 						<input type="hidden" name="size" th:value="${size}" />
 						<div class="col-md-8 input-group">  
@@ -105,9 +99,9 @@
 						</div>
 					</div>
 							
-					<div sec:authorize="hasAnyRole('ROLE_ADMIN','ROLE_UPDATE_FOURNISSEURS')" id="formulaireNouveauFournisseur" class="col-md-12 mb-5" style="display:none" >
+					<div  sec:authorize="hasRole('ROLE_ADMIN')" id="formulaireNouveauFournisseur" class="col-md-12 mb-5" style="display:none" >
 					 
-			          	<div class="card"> 
+			          	<div class="card">
 				            <div class="card-header">
 				            	Nouveau fournisseur
        					  		<a href="javascript:void(0)" class="closebtn" style="border:none; float:right" onclick="closeNavFormulaireNouveauFournisseur()">
@@ -115,7 +109,7 @@
 			  					</a>
 				            </div>
 				            <div class="card-body"> 
-								<form method="post" th:action="@{/fournisseurs/add}" class="row"> 
+								<form method="post" th:action="@{/addfournisseur}" class="row"> 
 									<table class="table col" style="border:none">
 										<tbody>
 											<tr>
@@ -213,7 +207,7 @@
 											<th>E-mail</th>
 											<th>Tél.</th>
 											<th>Fax</th> 
-											<th sec:authorize="hasAnyRole('ROLE_ADMIN','ROLE_UPDATE_FOURNISSEURS')">		           	
+											<th  sec:authorize="hasRole('ROLE_ADMIN')">		           	
 												<a class="btn btn-info btn-sm  text-light" 
 													onclick="openNavFormulaireNouveauFournisseur()">
 													<i class="fa fa-plus"></i> 
@@ -232,8 +226,8 @@
 											<td th:text="${frs.email}"></td>
 											<td th:text="${frs.tel}"></td> 
 											<td th:text="${frs.fax}"></td>
-											<td sec:authorize="hasAnyRole('ROLE_ADMIN','ROLE_UPDATE_FOURNISSEURS')">
-												<a class="btn-danger btn-sm"  th:href="@{/fournisseurs/delete(code=${frs.code})}" ><i class="fa fa-remove"></i></a>
+											<td  sec:authorize="hasRole('ROLE_ADMIN')">
+												<a class="btn-danger btn-sm"  th:href="@{deletefournisseur(code=${frs.code})}" ><i class="fa fa-remove"></i></a>
 												<a id="btnEdit" class="btn-primary btn-sm text-light"  th:onclick="'openNavFormulaireUpdateFournisseur(\''+${frs.code}+'\')'"><i class="fa fa-edit"></i></a>
 											</td>
 										</tr>
@@ -250,7 +244,7 @@
 				           	</div>
 			         	</div>  
 		         	
-			         	<div sec:authorize="hasAnyRole('ROLE_ADMIN','ROLE_UPDATE_FOURNISSEURS')" id="formulaireUpdateFournisseur" class="col-md-4" style="display:none"> 
+			         	<div  sec:authorize="hasRole('ROLE_ADMIN')" id="formulaireUpdateFournisseur" class="col" style="display:none"> 
 				          	<div class="card">
 					            <div class="card-header">
 					            	Mise à jour du fournisseur
@@ -259,7 +253,7 @@
 				  					</a>
 					            </div>
 					            <div class="card-body"> 
-									<form method="post" th:action="@{/fournisseurs/update}" name="formulaireUpdateFournisseur">
+									<form method="post" th:action="@{/updatefournisseur}" name="formulaireUpdateFournisseur">
 							       		<input th:value="${fournisseur.code}" type="hidden" name="code" class="form-control form-control-sm">
 										
 										<table class="table"> 
@@ -342,10 +336,9 @@
 				</div>
 			</div> 
 	</div>
- 	<div sec:authorize="hasAnyRole('ROLE_ADMIN','ROLE_UPDATE_FOURNISSEURS')"> 
-		<script th:if="${addFailed}" > openNavFormulaireNouveauFournisseur(); </script> 
-		<script th:if="${updateFailed}" > openNavFormulaireUpdateFournisseur(); </script> 
-	</div>
+	 
+	<script th:if="${addFailed}" > openNavFormulaireNouveauFournisseur(); </script> 
+	<script th:if="${updateFailed}" > openNavFormulaireUpdateFournisseur(); </script> 
 		  
 </div> 
 </body>

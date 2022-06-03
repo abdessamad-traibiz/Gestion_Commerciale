@@ -9,7 +9,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 
-import javax.servlet.ServletContext;
 import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,7 +40,6 @@ import com.emsi.entities.LigneFacture;
 import com.emsi.entities.Livraison;
 import com.emsi.entities.ReductionFacture;
 import com.emsi.entities.ReglementFacture;
-import com.emsi.entities.Stock;
 import com.emsi.imetier.IClientMetier;
 import com.emsi.imetier.ICommandeMetier;
 import com.emsi.imetier.IFactureMetier;
@@ -53,7 +51,6 @@ import com.emsi.imetier.IRDFMetier;
 import com.emsi.imetier.IRGFMetier;
 import com.emsi.imetier.IReductionMetier;
 import com.emsi.imetier.IReglementMetier;
-import com.emsi.imetier.IStockMetier;
 
 
 @Controller
@@ -72,32 +69,27 @@ public class FactureController
 	@Autowired private IRDFMetier metierRdf;
 	@Autowired private ILivraisonMetier metierLiv;
 	
-	@Autowired private IStockMetier metierStk;
-	
 	
 	@Autowired private HttpSession session;
-	
-	 @Autowired
-	    private ServletContext servletContext;
 	 
-	@RequestMapping(value= {"/factures/preview"})
-	public String previewFacture(Model model,@RequestParam(name="numero",defaultValue="0")Long num)
+	@RequestMapping(value= {"/factureimpr"})
+	public String index(Model model,@RequestParam(name="num",defaultValue="0")Long num)
 	{
 		try {
 			Facture fct = metierFacture.getFacture(num);
 	 		if(fct==null) return "redirect:/factures";
-	 		 System.err.println("path : "+servletContext.getContextPath());
-	 		model.addAttribute("url", servletContext.getContextPath() );
+	 		
 	 		model.addAttribute("facture",fct);
 	 		model.addAttribute("nbrProduits",0);
 	 		model.addAttribute("maSociete", metierFournisseur.getFournisseur("CODE_0"));
-		}catch (Exception e) {}
-		
+		}catch (Exception e) {
+			
+		}
 		return "factureimpr";
 	}
 	 
 	
-	@RequestMapping(value= {"/factures/print"})
+	@RequestMapping(value= {"/facture/download"})
 	public ResponseEntity<InputStreamResource> index(Model model,@RequestParam(name="num",defaultValue="0")Long num,
 		@RequestParam(name="dest",defaultValue="")String dest)
 	{
@@ -263,7 +255,7 @@ public class FactureController
  		model.addAttribute("pagesVente", new int[fcts.getTotalPages()]); 
  	}
  
- 	@RequestMapping(value="/factures/get")
+ 	@RequestMapping(value="/facture")
 	public String afficherFacture(Model model, @RequestParam(name="numero",defaultValue="0")Long numero,
 			@RequestParam(name="uok",defaultValue="0")String uok) 
 	{     
@@ -275,7 +267,7 @@ public class FactureController
 		return "facture";
 	}
  
-	@RequestMapping(value="/factures/nouveau")
+	@RequestMapping(value="/nouveaufacture")
 	public String nouveaufacture(Model model, @RequestParam(name="numCmd",defaultValue="0")Long numCmd) 
 	{      
 		if(!model.containsAttribute("facture")) { 
@@ -297,7 +289,7 @@ public class FactureController
 					(HashMap<String,ReductionFacture>)session.getAttribute("reds");
 			if(redsf!=null) model.addAttribute("redsf", redsf.values());
 			
-			HashMap<String, ReglementFacture> regsf =
+			HashMap<String,ReglementFacture> regsf = 
 					(HashMap<String,ReglementFacture>)session.getAttribute("regs");
 			if(regsf!=null) model.addAttribute("regsf", regsf.values());
 		}
@@ -330,7 +322,7 @@ public class FactureController
 		return "nouveaufacture";
 	}
 	  
-	@RequestMapping(value= {"/factures/save"}, method=RequestMethod.POST)
+	@RequestMapping(value= {"/savefacture"}, method=RequestMethod.POST)
 	public String saveFacture(Model model,  
 			@RequestParam(name="operation",defaultValue="0")	String operation, 
 			@RequestParam(name="numero",defaultValue="0")		Long num,
@@ -396,7 +388,6 @@ public class FactureController
 				lf.getProduit().setQuantite(lf.getProduit().getQuantite() - lf.getQte()); 
 			}
 			metierProduit.saveProduit(lf.getProduit());
-			metierStk.saveStock( new Stock(new Date(),lf.getProduit().getQuantite(),lf.getProduit()) );
 		} 
 		if(lfsr!=null) for(Long lf : lfsr) 
 			metierLigneFacture.deleteLigneFacture(lf); 
@@ -437,10 +428,10 @@ public class FactureController
 		model.addAttribute("addOk","Facture NUM"+facture.getNumero()+" est ajouté !");
 		model.addAttribute("facture",facture);
 		
-		return "redirect:/factures/get?numero="+facture.getNumero()+""+(operation.equals("1")?"&uok=1":"");
+		return "redirect:/facture?numero="+facture.getNumero()+""+(operation.equals("1")?"&uok=1":"");
 	}
 	 
-	@RequestMapping(value="/factures/edit",method=RequestMethod.GET)
+	@RequestMapping(value="/editfacture",method=RequestMethod.GET)
 	public String editFacture(Model model, @RequestParam(name="numero",defaultValue="0")Long numero) 
 	{    
 		Facture facture;
@@ -476,7 +467,7 @@ public class FactureController
 		return "nouveaufacture";
 	} 
 	  
-	@RequestMapping(value="/factures/delete")
+	@RequestMapping(value="/deletefacture")
 	public String deleteFacture(Model model,@RequestParam(name="numero",defaultValue="0")Long num) 
 	{  
 		metierFacture.deleteFacture(num);
@@ -484,7 +475,7 @@ public class FactureController
 		return "redirect:/factures";
 	}
 	
-	@RequestMapping(value="/factures/get", method=RequestMethod.POST,produces = "application/json")
+	@RequestMapping(value="/getfacture", method=RequestMethod.POST,produces = "application/json")
 	public @ResponseBody Facture getfacture(@RequestParam(name="numero")Long numero) 
 	{  
 		Facture p = metierFacture.getFacture(numero);  
@@ -528,7 +519,7 @@ public class FactureController
 	
 	//**************************** Lignes/rd/rg factures ***************************
 	 
-	@RequestMapping(value="/factures/ligne/store", method=RequestMethod.POST,produces = "application/json")
+	@RequestMapping(value="/storelf", method=RequestMethod.POST,produces = "application/json")
 	public @ResponseBody HashMap storelf(  
 			@RequestParam(name="refProduit",defaultValue="0")String refProduit, 
 			@RequestParam(name="qte",defaultValue="0")Integer qte,
@@ -566,7 +557,7 @@ public class FactureController
 		return res; 
 	}
 	 
-	@RequestMapping(value="/factures/ligne/remove", method=RequestMethod.POST,produces = "text/html")
+	@RequestMapping(value="/removelf", method=RequestMethod.POST,produces = "text/html")
 	public @ResponseBody String removelf(@RequestParam(name="ref",defaultValue="0")String ref) 
 	{   
 		HashMap<String,LigneFacture> lfs = (HashMap<String,LigneFacture>)session.getAttribute("lfs");
@@ -587,7 +578,7 @@ public class FactureController
 	
 	
 	
-	@RequestMapping(value="/factures/reg/store", method=RequestMethod.POST,produces = "application/json")
+	@RequestMapping(value="/storeregfacture", method=RequestMethod.POST,produces = "application/json")
 	public @ResponseBody HashMap storergf(  
 			@RequestParam(name="reg",defaultValue="0")Long reg, 
 			@RequestParam(name="taux",defaultValue="0")Double taux
@@ -619,7 +610,7 @@ public class FactureController
 		return res;
 	}
 	
-	@RequestMapping(value="/factures/reg/remove", method=RequestMethod.POST,produces = "text/html")
+	@RequestMapping(value="/removeregfacture", method=RequestMethod.POST,produces = "text/html")
 	public @ResponseBody String removergf(@RequestParam(name="reg",defaultValue="0")String id) 
 	{   
 		HashMap<String,ReglementFacture> regs = (HashMap<String,ReglementFacture>)session.getAttribute("regs");
@@ -639,7 +630,7 @@ public class FactureController
 	
 	
 	
-	@RequestMapping(value="/factures/red/store", method=RequestMethod.POST,produces = "application/json")
+	@RequestMapping(value="/storeredfacture", method=RequestMethod.POST,produces = "application/json")
 	public @ResponseBody HashMap storerdf(  
 			@RequestParam(name="red",defaultValue="0")Long id, 
 			@RequestParam(name="taux",defaultValue="0")Double taux
@@ -670,7 +661,7 @@ public class FactureController
 		return res;
 	} 
 	
-	@RequestMapping(value="/factures/red/remove", method=RequestMethod.POST,produces = "text/html")
+	@RequestMapping(value="/removeredfacture", method=RequestMethod.POST,produces = "text/html")
 	public @ResponseBody String removerdf(@RequestParam(name="red",defaultValue="0")String id) 
 	{   
 		HashMap<String,ReductionFacture> reds = (HashMap<String,ReductionFacture>)session.getAttribute("reds");

@@ -3,7 +3,6 @@ package com.emsi.web;
 
 import javax.validation.Valid;
 
-import com.emsi.entities.Produit;
 import com.emsi.imetier.IFamilleMetier;
 import com.emsi.imetier.IProduitMetier;
 import com.emsi.imetier.ITvaMetier;
@@ -16,6 +15,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+
+import com.emsi.entities.Produit;
 
 
 @Controller
@@ -51,7 +52,7 @@ public class ProduitController
 	
 	
 	  
-	@RequestMapping(value= {"/produits/add"}, method=RequestMethod.POST)
+	@RequestMapping(value= {"/addproduit"}, method=RequestMethod.POST)
 	public String addProduit(@Valid Produit produit, BindingResult result, Model model) 
 	{    	
 		metierProduit.getProduit(produit.getRef());
@@ -69,7 +70,7 @@ public class ProduitController
 		return index(model,0,8,"");
 	}
 	 
-	@RequestMapping(value="/produits/update",method=RequestMethod.POST)
+	@RequestMapping(value="/updateproduit",method=RequestMethod.POST)
 	public String updateProduit(@Valid Produit produit, BindingResult result, Model model) 
 	{    
 		if(saveProduit(produit,result,model)) 
@@ -92,7 +93,7 @@ public class ProduitController
 	}
 	
  
-	@RequestMapping(value="/produits/delete")
+	@RequestMapping(value="/deleteproduit")
 	public String deleteProduit(Model model,@RequestParam(name="ref",defaultValue="0")String ref) 
 	{  
 		metierProduit.deleteProduit(ref);
@@ -100,7 +101,7 @@ public class ProduitController
 		return index(model,0,8,"");
 	}
 	
-	@RequestMapping(value="/produits/get", method=RequestMethod.POST,produces = "application/json")
+	@RequestMapping(value="/getproduct", method=RequestMethod.POST,produces = "application/json")
 	public @ResponseBody Produit getproduit(@RequestParam(name="ref")String ref) 
 	{  
 		Produit p = metierProduit.getProduit(ref); 

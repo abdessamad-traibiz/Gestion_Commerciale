@@ -17,7 +17,7 @@ $(document).ready(function() {
         
        	$.ajax({
 	        type: "POST",
-	        url: wwwpath+"/factures/reg/store",
+	        url: wwwpath+"/storeregfacture",
 	        dataType: "json",
 	        data: { "reg": reg,
 	        		"taux": taux
@@ -62,7 +62,7 @@ function removeReg(id)
 {
 	$.ajax({
         type: "POST",
-        url: wwwpath+"/factures/reg/remove",
+        url: wwwpath+"/removeregfacture",
         dataType: "json",
         data: { reg: id }
 	});
@@ -88,7 +88,7 @@ $(document).ready(function() {
         
        	$.ajax({
 	        type: "POST",
-	        url: wwwpath+"/factures/red/store",
+	        url: wwwpath+"/storeredfacture",
 	        dataType: "json",
 	        data: { "red": red,
 	        		"taux": taux
@@ -135,7 +135,7 @@ function removeRed(id)
 {
 	$.ajax({
         type: "POST",
-        url: wwwpath+"/factures/red/remove",
+        url: wwwpath+"/removeredfacture",
         dataType: "json",
         data: { red: id }
 	});
@@ -180,7 +180,7 @@ function addLigne(){
 
        	$.ajax({
 	        type: "POST",
-	        url: wwwpath+"/factures/ligne/store",
+	        url: wwwpath+"/storelf",
 	        dataType: "json",
 	        data: { "refProduit": ref,
 	        	"qte": qte, 
@@ -233,7 +233,7 @@ function removeLigne(reff)
 {
 	$.ajax({
         type: "POST",
-        url: wwwpath+"/factures/ligne/remove",
+        url: wwwpath+"/removelf",
         dataType: "json",
         data: { ref: reff }
 	});
@@ -254,7 +254,7 @@ function getProduit(ref)
 {
 	$.ajax({
         type: "POST",
-        url: wwwpath+"/produits/get",
+        url: wwwpath+"/getproduct",
         dataType: "json",
         data: { "ref": ref },
         success: function (produit) {  
@@ -270,21 +270,9 @@ function getProduit(ref)
 
 <body>
 <div layout:fragment="body" >  
-									<form method="post" name="fnc" th:action="@{/factures/save}"> 
+									<form method="post" name="fnc" th:action="@{/savefacture}"> 
 
-		 	<script type="text/javascript">
-		 		$("#page").append('Factures');
-		 	</script>
-		 	
-		 	<script  th:if="${edit}" th:inline='javascript' type="text/javascript">
-	 			$("#page").parent().after('<li><a href="#">Mise à jour</a></li>');
-		 		$("#page").parent().after('<li><a href="#">Facture &numero;'+[[${facture.numero}]]+'</a></li>');
-	 		</script>
-	 		
-	 		<script  th:if="!${edit}"   type="text/javascript">
-		 		$("#page").parent().after('<li><a href="#">Nouveau</a></li>');
-	 		</script>
-		 		
+		 	<script type="text/javascript">$("#page").append(' > Factures')</script>
 			
 			<div class="card">
 				<div class="card-header mb-4" >
@@ -399,7 +387,7 @@ function getProduit(ref)
 										Produits commandés
 									</div>  
 			         			<form name="formStoreLc" id="formStoreLc" method="post" 
-			         				th:action="@{/factures/ligne/store}">
+			         				th:action="@{/storelignefacture}">
 			         			<input type="hidden" name="facture" th:value="${facture.numero}" />
 			         			
 			         			<div th:if="${exception}" th:text="${exception.message}" class="alert-danger"></div> 

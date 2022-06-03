@@ -9,10 +9,7 @@
 
 <body >
 <div layout:fragment="body" >
-			<script type="text/javascript" th:inline="javascript">
-				$("#page").append('Factures');
-		 		$("#page").parent().after('<li><a href="#">Facture &numero;'+[[${facture.numero}]]+'</a></li>');
-		 	</script>
+			<script type="text/javascript">$("#page").append(' > Factures')</script>
 			
        		<div th:if="${uok}" class="alert-success text-success p-3 my-3">Modifications effectué !</div>
 	       		
@@ -24,17 +21,17 @@
 					<div class="row p-0 mt-2">	   
 	           			<div class="col h4 form-inline p-0">
 			        		<span>Facture &numero;</span>  
-			        		<span th:text="${facture.numero}" ></span>   
-			        		<form sec:authorize="hasAnyRole('ROLE_ADMIN','ROLE_PRINT_FACTURES')" class="ml-2" th:action="@{/factures/print(num=${facture.numero})}">
+			        		<span th:text="${facture.numero}" ></span> 
+			        		<form class="ml-2" th:action="@{/facture/download(num=${facture.numero})}">
 			           			<input type="hidden" name="num" th:value="${facture.numero}">
 			           			<button type="submit" class="btn-sm btn-danger">
 			           				<i class="fa fa-file-pdf-o"></i>
 			           			</button>
 			           		</form>
 			       		</div> 
-			           	<div sec:authorize="hasAnyRole('ROLE_ADMIN','ROLE_UPDATE_FACTURES')" class="col text-right mb-3 float-right p-0">  
-					        <a  th:href="@{/factures/edit(numero=${facture.numero})}"  class="btn btn-success">Corriger</a> 
-				         	<a th:href="@{/factures/delete(numero=${facture.numero})}" class="btn btn-danger">Supprimer</a>
+			           	<div class="col text-right mb-3 float-right p-0">  
+					        <a  th:href="@{editfacture(numero=${facture.numero})}"  class="btn btn-success">Corriger</a> 
+				         	<a th:href="@{deletefacture(numero=${facture.numero})}" class="btn btn-danger">Supprimer</a>
 			           	</div>
 					</div>
 					<div  class="col p-0">   
@@ -67,12 +64,12 @@
 										
 										<tr>
 											<th>Total : </th>
-											<td th:text="${#numbers.formatDecimal(facture.total, 0, 'DEFAULT', 2, 'DEFAULT')}+' MAD'"></td>
+											<td th:text="${facture.total}+' MAD'"></td>
 										</tr> 
 										
 										<tr>
 											<th>Total TTC: </th>
-											<td th:text="${#numbers.formatDecimal(facture.ttc, 0, 'DEFAULT', 2, 'DEFAULT')}+' MAD'"></td>
+											<td th:text="${facture.ttc}+' MAD'"></td>
 										</tr> 
 									</table>
 					            </div>
@@ -178,15 +175,15 @@
 												<td th:text="${ligne.produit.designation}"></td>
 												<td th:text="${ligne.prix}"></td>  
 												<td th:text="${ligne.qte}"></td> 
-												<td th:text="${#numbers.formatDecimal(ligne.total, 0, 'DEFAULT', 2, 'DEFAULT')}"></td> 
+												<td th:text="${ligne.total}"></td> 
 												<td th:text="${ligne.produit.tva}"></td>
-												<td th:text="${#numbers.formatDecimal(ligne.ttc, 0, 'DEFAULT', 2, 'DEFAULT')}"></td> 
+												<td th:text="${ligne.ttc}"></td> 
 											</tr>
 											<tr>  
 												<td colspan="3"></td> 
-												<td class="alert-info" th:text="'Total : '+${#numbers.formatDecimal(facture.total, 0, 'DEFAULT', 2, 'DEFAULT')}"></td> 
+												<td class="alert-info" th:text="'Total : '+${facture.total}"></td> 
 												<td></td>
-												<td class="alert-info"  th:text="'Total TTC: '+${#numbers.formatDecimal(facture.ttc, 0, 'DEFAULT', 2, 'DEFAULT')}"></td> 
+												<td class="alert-info"  th:text="'Total TTC: '+${facture.ttc}"></td> 
 											</tr>
 										</tbody>
 									</table>

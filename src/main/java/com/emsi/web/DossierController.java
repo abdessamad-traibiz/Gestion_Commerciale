@@ -8,7 +8,6 @@ import java.util.Date;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 
-import com.emsi.entities.User;
 import com.emsi.imetier.ICommandeMetier;
 import com.emsi.imetier.IDossierMetier;
 import com.emsi.imetier.IFactureMetier;
@@ -24,6 +23,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.emsi.entities.Dossier;
+import com.emsi.entities.User;
 
 
 @Controller
@@ -111,7 +111,7 @@ public class DossierController
 		return "dossiers"; 
 	}  
 	 
-	@RequestMapping(value="/dossiers/save",method=RequestMethod.POST)
+	@RequestMapping(value="/savedossier",method=RequestMethod.POST)
 	public String saveDossier(@Valid Dossier dos, BindingResult result,  Model model) 
 	{    
 		if(result.hasErrors()) { 
@@ -141,7 +141,7 @@ public class DossierController
 		return index(model,0,20,"","","","",""); 
 	}
 	  
-	@RequestMapping(value="/dossiers/delete", method=RequestMethod.POST)
+	@RequestMapping(value="/deletedossier", method=RequestMethod.POST)
 	public String deleteDossier(Model model,@RequestParam(name="num",defaultValue="0")Long num) 
 	{   
 		metierDossier.deleteDossier(num);
@@ -149,7 +149,7 @@ public class DossierController
 		return index(model,0,20,"","","","",""); 
 	}
 	
-	@RequestMapping(value="/dossiers/open")
+	@RequestMapping(value="/dossier")
 	public String opendossier(Model model, @RequestParam(name="num")Long num) 
 	{   
 		Dossier dos = metierDossier.getDossier(num);
@@ -158,7 +158,7 @@ public class DossierController
 		return "redirect:/commandes";
 	} 
 	
-	@RequestMapping(value="/dossiers/fermer")
+	@RequestMapping(value="/fermerdossier")
 	public String fermerdossier() 
 	{    
 		session.setAttribute("dossier", null);
@@ -166,7 +166,7 @@ public class DossierController
 		return "redirect:/dossiers"; 
 	} 
 	
-	@RequestMapping(value="/dossiers/details")
+	@RequestMapping(value="/dossier/details")
 	public String showdossier(Model model, @RequestParam(name="num", defaultValue="0")Long num) 
 	{   
 		Dossier dos = metierDossier.getDossier(num);

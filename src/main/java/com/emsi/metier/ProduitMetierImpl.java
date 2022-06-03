@@ -4,7 +4,6 @@ import java.util.List;
 
 import javax.transaction.Transactional;
 
-import com.emsi.entities.Produit;
 import com.emsi.imetier.IProduitMetier;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -12,6 +11,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import com.emsi.dao.ProduitRepository;
+import com.emsi.entities.Produit;
 
 
 @Service
@@ -22,7 +22,7 @@ public class ProduitMetierImpl implements IProduitMetier
 	private ProduitRepository prdRep;
 
 	@Override
-	public Page<Produit> getProduitsByFamille(Long codeFamille, int page, int size) {
+	public Page<Produit> getProduitsByFamille(Long codeFamille, int page, int size) { 
 		return prdRep.getAllByCodeFamille(codeFamille, new PageRequest(page, size));
 	}
 

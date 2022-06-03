@@ -46,7 +46,7 @@ public class ClientsController
 	
 	
 
-	@RequestMapping(value= {"/clients/add"}, method=RequestMethod.POST)
+	@RequestMapping(value= {"/addclient"}, method=RequestMethod.POST)
 	public String addClient(@Valid Client client, BindingResult result, Model model) 
 	{    	
 		metierClient.getClient(client.getCode());
@@ -61,7 +61,7 @@ public class ClientsController
 	}
 	
 	
-	@RequestMapping(value="/clients/update",method=RequestMethod.POST)
+	@RequestMapping(value="/updateclient",method=RequestMethod.POST)
 	public String updateClient(@Valid Client client, BindingResult result, Model model) 
 	{    
 		if(saveClient(client,result,model)) 
@@ -84,7 +84,7 @@ public class ClientsController
 	}
 	
  
-	@RequestMapping(value="/clients/delete")
+	@RequestMapping(value="/deleteclient")
 	public String deleteClient(Model model,@RequestParam(name="code",defaultValue="0")String code) 
 	{  
 		metierClient.deleteClient(code);
@@ -96,7 +96,7 @@ public class ClientsController
 	
 	
 	
-	@RequestMapping(value="/clients/get", method=RequestMethod.POST,produces = "application/json")
+	@RequestMapping(value="/getclient", method=RequestMethod.POST,produces = "application/json")
 	public @ResponseBody Client getroduit(@RequestParam(name="code")String code) 
 	{  
 		Client frs = metierClient.getClient(code);  

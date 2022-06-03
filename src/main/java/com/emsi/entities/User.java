@@ -10,8 +10,6 @@ import javax.persistence.OneToMany;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
 
 @Entity
 public class User implements Serializable
@@ -19,17 +17,18 @@ public class User implements Serializable
 	@Id @NotNull @Size(min=4,max=100) private String username;
 	
 	@Size(min=4,max=100)
-	@JsonIgnore
 	private String password;
 	
 	@NotNull
-	private boolean active = true;
-	    
-	@OneToMany(mappedBy="user",fetch=FetchType.LAZY) 
+	private Boolean active = false;
+	   
+	@OneToMany(mappedBy="user",fetch=FetchType.LAZY)
 	private Collection<UsersRoles> roles;
-	
+
 	public User() {}
-	 
+	
+	
+
 	public User(String username, String password, Boolean active) {
 		super();
 		this.username = username;
@@ -63,14 +62,13 @@ public class User implements Serializable
 		this.roles = roles;
 	}
 
-	public boolean getActive() {
+	public Boolean getActive() {
 		return active;
 	}
 
-	public void setActive(boolean active) {
+	public void setActive(Boolean active) {
 		this.active = active;
 	}  
-
 	@Override
 	public String toString() { return username; }
 }

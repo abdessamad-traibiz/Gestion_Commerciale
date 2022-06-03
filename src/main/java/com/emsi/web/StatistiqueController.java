@@ -3,12 +3,10 @@ package com.emsi.web;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
-import com.emsi.entities.Produit;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -18,13 +16,13 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.emsi.entities.LigneFacture;
+import com.emsi.entities.Produit;
 import com.emsi.imetier.ICommandeMetier;
 import com.emsi.imetier.IDossierMetier;
 import com.emsi.imetier.IFactureMetier;
 import com.emsi.imetier.IFamilleMetier;
 import com.emsi.imetier.ILfMetier;
 import com.emsi.imetier.IProduitMetier;
-import com.emsi.imetier.IStockMetier;
 
 
 @Controller
@@ -37,18 +35,8 @@ public class StatistiqueController
 	@Autowired private IDossierMetier metierDos;
 	@Autowired private IFamilleMetier metierFamille;
 
-	@Autowired private ICommandeMetier metierCmd; 
-
-	@Autowired private IStockMetier metierStk; 
-	
-	
-	@RequestMapping("/") public String index(Model model)
-	{
-		model.addAttribute("dossiers", metierDos.getDossiers());
-		model.addAttribute("produits", metierProduit.getProduits());
-		return "index";
-	}
-	
+	@Autowired private ICommandeMetier metierCmd;  
+		 
 		 
 	@RequestMapping("/statistiques") public String index(
 			Model model,
@@ -63,7 +51,7 @@ public class StatistiqueController
 		return "rapports";
 	} 
 	
-	@RequestMapping(value="/statistiques/getstatistiques", method=RequestMethod.POST,produces = "application/json")
+	@RequestMapping(value="/getstatistiques", method=RequestMethod.POST,produces = "application/json")
 	public @ResponseBody HashMap<String,List<Statistique>> getStatistiques( 
 			@RequestParam(name="d",defaultValue="0")Long numDossier,
 			@RequestParam(name="j",defaultValue="0")Integer j,
@@ -157,7 +145,7 @@ public class StatistiqueController
 	} 
 	
 	
-	@RequestMapping(value="/statistiques/getglobalstatistiques", method=RequestMethod.POST,produces = "application/json")
+	@RequestMapping(value="/getglobalstatistiques", method=RequestMethod.POST,produces = "application/json")
 	public @ResponseBody HashMap<String,Object> getGlobalStatistiques(  
 			@RequestParam(name="m",defaultValue="0")Integer m,
 			@RequestParam(name="a",defaultValue="0")Integer a 
@@ -217,7 +205,7 @@ public class StatistiqueController
 	}
 	
 	
-	@RequestMapping(value="/statistiques/getStatistiquesAV", method=RequestMethod.POST,produces = "application/json")
+	@RequestMapping(value="/getStatistiquesAV", method=RequestMethod.POST,produces = "application/json")
 	public @ResponseBody HashMap<String,List> getStatistiquesAV( 
 			@RequestParam(name="m",defaultValue="0")Integer m,
 			@RequestParam(name="a",defaultValue="0")Integer a 
@@ -251,7 +239,7 @@ public class StatistiqueController
 		return sts;
 	}
 	
-	@RequestMapping(value="/statistiques/getmostselled", method=RequestMethod.POST,produces = "application/json")
+	@RequestMapping(value="/getmostselled", method=RequestMethod.POST,produces = "application/json")
 	public @ResponseBody HashMap<String,List<String>> getMostSelled( 
 			@RequestParam(name="m",defaultValue="0")Integer m,
 			@RequestParam(name="a",defaultValue="0")Integer a 
@@ -262,19 +250,16 @@ public class StatistiqueController
 		lfs.put("prixs", new ArrayList<>()); 
 		lfs.put("qtes", new ArrayList<>()); 
 		lfs.put("ttcs", new ArrayList<>()); 
-		lfs.put("ids", new ArrayList<>()); 
 		
 		try{ 
 			SimpleDateFormat sf = new SimpleDateFormat("yyyy-MM-dd"); 
-			Date d2 = sf.parse(a+"-12-31"), d1 = sf.parse(a+"-1-1");  
+			Date d1 = sf.parse(a+"-"+(m)+"-1"), d2 = sf.parse(a+"-"+(m+1)+"-1");  
 			List<LigneFacture> list = metierLf.getLignesFacture(d1,d2).getContent();
-			//System.err.println(d1+" "+d2);
 			for(LigneFacture lf : list) {
 				lfs.get("produits").add(lf.getProduit().getDesignation());
 				lfs.get("prixs").add(lf.getPrix()+"");
 				lfs.get("qtes").add(lf.getQte()+"");
 				lfs.get("ttcs").add(lf.getTtc()+""); 
-				lfs.get("ids").add(lf.getProduit().getRef()); 
 			}
 		}
 		catch(Exception e){ System.err.println("nooo"); } 
@@ -282,150 +267,9 @@ public class StatistiqueController
 		return lfs;
 	}
 	
-	@RequestMapping(value="/statistiques/getstocks", method=RequestMethod.POST,produces = "application/json")
-	public @ResponseBody Collection getStocks( 
-			@RequestParam(name="m",defaultValue="0")Integer m,
-			@RequestParam(name="a",defaultValue="2018")Integer a,
-			@RequestParam(name="j",defaultValue="0")Integer j,
-			@RequestParam(name="ref",defaultValue="0")String refProduit
-	) 
-	{
-		HashMap<String,String> list= new HashMap<String,String>(); 
-		List<Statistique> res = new ArrayList<Statistique>(); 
-		
-		String[] ms = {"Janvier", "Fevrier", "Mars", "Avril", "May", "Juin", "Juillet", "Aout", "September", "Octob", "November", "December"};
-  
-		try{    
-			List<Object[]> stocks;
-			if(m>0)
-			{
-				if(j>0) stocks = metierStk.getMoyenStocksJour(refProduit,a,m,j);  
-				else    stocks = metierStk.getMoyenStocksMois(refProduit,a,m); 
-			}
-			else stocks = metierStk.getMoyenStocksAnne(refProduit,a); 
-			
-			for(Object[] stock : stocks) { 
-				list.put(""+stock[0],""+stock[1]);  
-			}
-			//res.add(new Statistique("","0"));
-			  
- 
-			if(m>0&&j>0) for(int i=0;i<=24;i++) {
-				if(list.containsKey(""+i)) 
-					res.add(new Statistique(i+":00",list.get(""+i))); 
-				else res.add(new Statistique(i+":00","0"));
-			}
-			else if(m>0) for(int i=1;i<=31;i++) {
-				if(list.containsKey(""+i)) 
-					res.add(new Statistique(i+"",list.get(""+i))); 
-				else res.add(new Statistique(i+"","0"));
-			}
-			else for(int i=1;i<=12;i++) {
-				if(list.containsKey(""+i)) 
-					res.add(new Statistique(""+ms[i-1],list.get(""+i))); 
-				else res.add(new Statistique(""+ms[i-1],"0"));
-			}
-			
-		}
-		catch(Exception e){ System.err.println("stock "+e.getMessage()); } 
-
-		return res;
-	}
-
-	@RequestMapping(value="/statistiques/getallstocks", method=RequestMethod.POST,produces = "application/json")
-	public @ResponseBody FusionChart getAllStocks( 
-			@RequestParam(name="m",defaultValue="0")Integer m,
-			@RequestParam(name="a",defaultValue="2018")Integer a,
-			@RequestParam(name="j",defaultValue="0")Integer j
-	) 
-	{
-		HashMap<String,HashMap<Integer,Value>> list = new HashMap<String,HashMap<Integer,Value>>();  
-		
-		List<DataSet> ret = new ArrayList<>();
-		Collection<Label> categories = new ArrayList<>();
-		Collection<Categorie> cats = new ArrayList<>();
-		 
-		try{    
-			List<Object[]> stocks;
-			if(m>0)
-			{
-				if(j>0) stocks = metierStk.getMoyenStocksJour(a,m,j);
-				else    stocks = metierStk.getMoyenStocksMois(a,m);
-			}
-			else stocks = metierStk.getMoyenStocksAnne(a);
-			  
-			int n=12;
-			if(m>0) {
-				if(j>0) n=24; else n=31;  
-				for(int k=1;k<=n;k++) categories.add(new Label(""+k));
-			}
-			else { 		
-				String[] ms = {"Janvier", "Fevrier", "Mars", "Avril", "May", "Juin", "Juillet", "Aout", "September", "Octob", "November", "December"};
-				for(int k=0;k<n;k++) categories.add(new Label(ms[k])); 
-			}
-			
-			Integer v=0,  k=1; 
-			int i; 
-			
-			for(i=0;i<stocks.size();i++) 
-			{  
-				Object[] stock = stocks.get(i);
-				
-				try { v=Integer.valueOf(stock[1].toString()); }catch (Exception e) {v=-1;}
-
-				if( !list.containsKey(stock[0]+"") ) {   
-					list.put(stock[0]+"",new HashMap<Integer,Value>()); 
-					
-					if(i>0) {
-						ret.add( new DataSet(stocks.get(i-1)[0]+"",list.get(stocks.get(i-1)[0]).values()) );
-					}
-				}
-				else {
-					list.get(""+stock[0]).put(v,new Value(stock[2]+"")); 
-					continue;
-				}
-				 
-				for(k=1;k<=n;k++)
-				{  
-					if(k == v) {
-						list.get(""+stock[0]).put(v,new Value(stock[2]+"")); 
-					}  
-					else list.get(""+stock[0]).put(k,new Value("0")); 
-				}  
-			}  
-			if(i>0) ret.add( new DataSet(stocks.get(i-1)[0]+"",list.get(stocks.get(i-1)[0]).values()) );
-			 
-			cats.add(new Categorie(categories));
-		}
-		catch(Exception e){ System.err.println("stock 2 "+e.getMessage()); } 
- 
-		FusionChart fc = new FusionChart(cats, ret);		
-		return fc;
-	}
-	
-	
 	public class Label { public Label(String v){label=v;} public String label; }  
 	public class Value { public Value(String v){value=v;} public String value; }  
 	public class Statistique  { public String label,value; public Statistique(String l, String v){label=l;value=v;} }
-
-	public class DataSet{
-		public String seriesname;
-		public Collection<Value> data;
-		public DataSet(String s,Collection c) { seriesname=s; data = c;}
-	}
-	
-	public class Categorie{ 
-		public Collection<Label> category;
-		public Categorie(Collection<Label> c) { category=c;}
-	}
-	
-	public class FusionChart{
-		public Collection<Categorie> categories;
-		public Collection<DataSet> dataset;
-		public FusionChart(Collection<Categorie> c, Collection<DataSet> d) {categories=c; dataset=d;}
-	}
-	
-	
 }
 
 

@@ -31,13 +31,6 @@ public class ServletInitializer extends SpringBootServletInitializer {
 	    	registry.addConverter(new ClientConverter(mc));
 	    	registry.addConverter(new FournisseurConverter(mf));
 	    }
-	     
-
-	    /*@Override
-	    public void addResourceHandlers(ResourceHandlerRegistry registry) {
-	        registry.addResourceHandler("/resources/**")
-	            .addResourceLocations("/resources/**");
-	    }*/
 	}
 
 }

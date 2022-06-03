@@ -8,7 +8,7 @@
 <title>Articles</title>
 
 
-<script sec:authorize="hasAnyRole('ROLE_ADMIN','ROLE_UPDATE_PRODUITS')">
+<script sec:authorize="hasRole('ROLE_ADMIN')">
 	function openNavFormulaireUpdateProduit(id) { 
 		if(id!=null)getProduit(id); 
 		$("tr").css("background-color","");
@@ -34,7 +34,7 @@
 	function getProduit(id)
 	{ 
 		$.ajax({ 
-			url : wwwpath+"/produits/get", 
+			url : wwwpath+"/getproduct", 
 			data : {    ref : id  }, 
 			type : "POST",
 			dataType : "json",  
@@ -60,13 +60,12 @@
 <div layout:fragment="body" > 
 	 <script type="text/javascript">$("#page").html('Produits')</script>
 	 
-	<div  sec:authorize="hasAnyRole('ROLE_ADMIN','ROLE_SHOW_PRODUITS')">  
+	<div >  
 			<div class="card bg-gradient"> 
-				<div class="card-header text-center">Produits</div>
-				<div class="card-body p-4" >
+				<div class="card-body" >
 				
 					<div class="row py-4">
-						<form th:action="@{/produits}" class="col pl-0">
+						<form th:action="@{/produits}" class="col">
 						<div class="col-md-8 input-group">  
 				      		<div class="input-group-prepend">
 						    	<label class="col-form-label col-form-label-sm input-group-text p-0" for="mc"> &nbsp;Mot clé : &nbsp;</label>
@@ -94,16 +93,14 @@
 						</div>
 					</div>
 				
-					<div class="col">
-						<div class="alert alert-success text-success" th:if="${updateOk}" th:text="${updateOk}"></div>
-						<div class="alert alert-success text-primary" th:if="${addOk}" th:text="${addOk}"></div>
-						<div class="alert alert-danger text-danger" th:if="${deleteOk}" th:text="${deleteOk}"></div>
-					</div>
-					
+					<div class="alert-warning text-success" th:if="${updateOk}" th:text="${updateOk}"></div>
+					<div class="alert-warning text-primary" th:if="${addOk}" th:text="${addOk}"></div>
+					<div class="alert-warning text-danger" th:if="${deleteOk}" th:text="${deleteOk}"></div>
+
 					<div  class="">
 		         	<div class="row">
 			         	
-			         	<div sec:authorize="hasAnyRole('ROLE_ADMIN','ROLE_UPDATE_PRODUITS')" id="formulaireNouveauProduit" class="col-md-4" style="display:none" >
+			         	<div  sec:authorize="hasRole('ROLE_ADMIN')" id="formulaireNouveauProduit" class="col-md-4" style="display:none" >
 					 
 				          	<div class="card">
 					            <div class="card-header" >
@@ -113,7 +110,7 @@
 				  					</a>
 					            </div>
 					            <div class="card-body"> 
-									<form method="post" th:action="@{/produits/add}">
+									<form method="post" th:action="@{/addproduit}">
 										<table class="table"> 
 										  <tbody>
 										  	<tr>
@@ -204,7 +201,7 @@
 				        </div>  
 				
 			         	
-			         	<div  class="col" id="listeArticles"> 
+			         	<div class="col" id="listeArticles"> 
 							<div class="limit">
 					           <table class="table table-hover">
 									<thead>
@@ -216,8 +213,8 @@
 											<th>TVA</th>
 											<th class="alert-primary text-center"><i class="fa d-inline fa-lg fa fa fa-database"></i></th>
 											<th class="alert-warning text-center"><b><i class="fa fa-bell-o"></i></b></th>
-											 
-											<th sec:authorize="hasAnyRole('ROLE_ADMIN','ROLE_UPDATE_PRODUITS')">
+											<th></th>
+											<th sec:authorize="hasRole('ROLE_ADMIN')">
 												<a class="btn btn-info btn-sm text-light" onclick="openNavFormulaireNouveauProduit()">
 													<i class="fa fa-plus text-light"></i> Nouveau</a>
 											</th>
@@ -233,13 +230,13 @@
 											<td th:text="${p.quantite}" th:class="(${p.quantite}<=${p.quantiteAlert})? 'alert-danger text-center' : 'alert-success text-center' ">
 											</td> 
 											<td th:text="${p.quantiteAlert}"  class="alert-warning  text-center"></td>
-											<!--td sec:authorize="hasAnyRole('ROLE_ADMIN','ROLE_ADD_COMMANDE')">
+											<td>
 												<a th:if="${p.quantite}<=${p.quantiteAlert}" class="btn-danger btn-sm" style="margin:0"  th:href="@{commanderproduit(ref=${p.ref})}" >
 													Commander
 												</a> 
-											</td-->
-											<td sec:authorize="hasAnyRole('ROLE_ADMIN','ROLE_UPDATE_PRODUITS')">
-												<a class=" btn-danger btn-sm"  th:href="@{/produits/delete(ref=${p.ref})}" ><i class="fa fa-remove"></i></a>
+											</td>
+											<td  sec:authorize="hasRole('ROLE_ADMIN')">
+												<a class=" btn-danger btn-sm"  th:href="@{deleteproduit(ref=${p.ref})}" ><i class="fa fa-remove"></i></a>
 												<a id="btnEdit" class=" btn-primary btn-sm text-light"  th:onclick="'openNavFormulaireUpdateProduit(\''+${p.ref}+'\')'"><i class="fa fa-edit"></i></a>
 											</td>
 										</tr>
@@ -256,7 +253,7 @@
 				           	</div>
 			         	</div>  
 		         	
-			         	<div sec:authorize="hasAnyRole('ROLE_ADMIN','ROLE_UPDATE_PRODUITS')" id="formulaireUpdateProduit"  class="col-md-4" style="display:none" > 
+			         	<div  sec:authorize="hasRole('ROLE_ADMIN')" id="formulaireUpdateProduit"  class="col-md-4" style="display:none" > 
 				          	<div class="card">
 					            <div class="card-header">
 					            	Mise à jour du produit
@@ -265,7 +262,7 @@
 				  					</a>
 					            </div>
 					            <div class="card-body"> 
-									<form method="post" th:action="@{/produits/update}" name="formulaireUpdateProduit">
+									<form method="post" th:action="@{/updateproduit}" name="formulaireUpdateProduit">
 							       		<input th:value="${produit.ref}" type="hidden" name="ref" class="form-control">
 										
 										<table class="table"> 

@@ -16,7 +16,7 @@ $(document).ready(function() {
         var prx = document.formStoreLc.prix.value;
        	$.ajax({
 	        type: "POST",
-	        url: wwwpath+"/commandes/ligne/store",
+	        url: wwwpath+"/storelignecommande",
 	        dataType: "json",
 	        data: { "refProduit": ref,
 	        	"qte": qte
@@ -60,7 +60,7 @@ function removeLigne(reff)
 {
 	$.ajax({
         type: "POST",
-        url: wwwpath+"/commandes/ligne/remove",
+        url: wwwpath+"/removelignecommande",
         dataType: "json",
         data: { ref: reff }
 	});
@@ -79,12 +79,11 @@ function getProduit(ref)
 {
 	$.ajax({
         type: "POST",
-        url: wwwpath+"/produits/get",
+        url: wwwpath+"/getproduct",
         dataType: "json",
         data: { "ref": ref },
         success: function (produit) {  
         	$("#prix").val(produit.prix); 
-        	$("#stock").val(produit.quantite);  
         },
         error:function(xhr, status){
         	alert(xhr.message);
@@ -115,12 +114,9 @@ function showActor(i)
 
 <body>
 <div layout:fragment="body"  class="col">  
-	 <script type="text/javascript">
-	 	$("#page").append(' Commandes ');
-	 	$("#page").parent().after(' <li><a href="#">Nouveau</a></li>  ');
-	 </script>
-			<div class="card mt-2" style="border:none"> 
-				<div class="card-body p-3" >
+	 <script type="text/javascript">$("#page").append(' > Commandes')</script>
+			<div class="card" style="border:none"> 
+				<div class="card-body" >
 				<span class="h4">Nouveau commande</span><br><br><br>
 				
 					<div class="alert-warning text-success" th:if="${updateOk}" th:text="${updateOk}"></div>
@@ -134,7 +130,7 @@ function showActor(i)
 					 
 				          	<div class="card"> 
 					            <div class="card-body"> 
-									<form method="post" th:action="@{/commandes/add}">
+									<form method="post" th:action="@{/addcommande}">
 									<div th:if="${addField}" th:text="${addField}" class="alert-danger"></div>
 										<table class="table"> 
 										  <tbody> 
@@ -210,7 +206,7 @@ function showActor(i)
 										Produits
 									</div>
 			         			<form name="formStoreLc" id="formStoreLc" method="post" 
-			         				  th:action="@{/commandes/ligne/store}">
+			         				  th:action="@{/storelignecommande}">
 			         			<input type="hidden" name="commande" th:value="${commande.numero}" />
 			         			 
 					        	<div th:if="${addLcOk}" th:text="${addLcOk}" class="alert-success"></div>
@@ -234,9 +230,6 @@ function showActor(i)
 													<span  class="input-group-text">MAD</span>
 												</div>
 												</div>
-											</td>
-											<td>
- 												<input placeholder="Quantité en stock" id="stock" class="form-control" readonly="1"> 
 											</td>
 											<td> <input placeholder="Quantité" name="qte" class="form-control" /> </td>  
 											<td>
@@ -277,7 +270,7 @@ function showActor(i)
 					          	<ul class="pagination bg-dark" style="border-radius:0">
 									<li th:each="pa,status:${pages}" class="nav-item">
 										<a 	th:class="${status.index}==${pageCourant}?'active nav-link ':'nav-link '" 
-											th:href="@{/commandes/get(numero=${commande.numero}, page=${status.index},size=${size},motCle=${motCle})}" th:text="${status.index}+1"></a>
+											th:href="@{/commande(numero=${commande.numero}, page=${status.index},size=${size},motCle=${motCle})}" th:text="${status.index}+1"></a>
 									</li>
 								</ul> 
 				           	</div>

@@ -10,25 +10,23 @@
 
 <body>
 <div layout:fragment="body" > 
-	 <script type="text/javascript">$("#page").append('Factures')</script>
+	 <script type="text/javascript">$("#page").append(' > Factures')</script>
 	<div >  
 			<div class="card">
 				
-				<div class="card-header text-center">Factures</div>
 				<div class="card-body"  >  
-					<div sec:authorize="hasAnyRole('ROLE_ADMIN','ROLE_UPDATE_FACTURES')">  
-						<div class="alert-warning text-success" th:if="${updateOk}" th:text="${updateOk}"></div>
-						<div class="alert-warning text-primary" th:if="${addOk}" th:text="${addOk}"></div>
-						<div class="alert-warning text-danger" th:if="${deleteOk}" th:text="${deleteOk}"></div>
+					<div class="alert-warning text-success" th:if="${updateOk}" th:text="${updateOk}"></div>
+					<div class="alert-warning text-primary" th:if="${addOk}" th:text="${addOk}"></div>
+					<div class="alert-warning text-danger" th:if="${deleteOk}" th:text="${deleteOk}"></div>
  					
- 					 
-						<div class="col text-right mt-3" >
-							<a class="btn btn-info btn-sm" th:href="@{/factures/nouveau}">
-							<i class="fa fa-plus text-light"></i> Ajouter
-							</a>
-						</div> 
+ 					
+ 					
+  
+					<div class="col text-right mt-3" >
+						<a class="btn btn-info btn-sm" th:href="@{/nouveaufacture}">
+						<i class="fa fa-plus text-light"></i> Ajouter
+						</a>
 					</div> 
-					
  					<div id="rowFactures" class="card-deck row" style="margin:15px" > 
 							<form th:action="@{/factures}" >
  							<div class="input-group"> 
@@ -58,7 +56,7 @@
  					</div>
  					
  					<div class="row" > 
-						<div  sec:authorize="hasAnyRole('ROLE_ADMIN','ROLE_SHOW_FACTURES')" th:if="${achat}" class="col"  >  
+						<div th:if="${achat}" class="col"  >  
 							<div class="card">
 								<div class="card-header" >
 									Achats   
@@ -105,11 +103,11 @@
 													<td  th:text="${p.dateFacture}?${#dates.format(p.dateFacture, 'dd-MM-yyyy')}"></td>  
 													<td th:if="${achat}" th:text="${p.fournisseur}"></td>
 													<td class="px-0">
-														<a class="btn-success btn-sm" target="_blanc" th:href="@{/factures/get(numero=${p.numero})}">Details</a>
+														<a class="btn-success btn-sm" target="_blanc" th:href="@{facture(numero=${p.numero})}">Details</a>
 													</td>
-													<td sec:authorize="hasAnyRole('ROLE_ADMIN','ROLE_UPDATE_FACTURES')" class="px-0">
-														<a class=" btn-danger btn-sm"  th:href="@{/factures/delete(numero=${p.numero})}" ><i class="fa fa-remove"></i></a>
-														<a th:href="@{/factures/edit(numero=${p.numero})}" id="btnEdit" 
+													<td class="px-0">
+														<a class=" btn-danger btn-sm"  th:href="@{deletefacture(numero=${p.numero})}" ><i class="fa fa-remove"></i></a>
+														<a th:href="@{/editfacture(numero=${p.numero})}" id="btnEdit" 
 															class=" btn-primary btn-sm text-light">
 															<i class="fa fa-edit"></i>
 														</a>
@@ -131,7 +129,7 @@
 					         </div>
 			         	</div>
 			         	
-						<div  sec:authorize="hasAnyRole('ROLE_ADMIN','ROLE_SHOW_FACTURES')"  th:if="${vente}" class="col" >  
+						<div  th:if="${vente}" class="col" >  
 							<div class="card">
 								<div class="card-header" >
 									Ventes   
@@ -179,14 +177,14 @@
 													<td th:text="${p.dateFacture}?${#dates.format(p.dateFacture, 'dd-MM-yyyy')}"></td> 
 													<td th:if="${vente}" th:text="${p.client}"></td> 
 													<td class="px-0">
-														<a class="btn-success btn-sm" target="_blanc" th:href="@{/factures/get(numero=${p.numero})}">Details</a>
+														<a class="btn-success btn-sm" target="_blanc" th:href="@{facture(numero=${p.numero})}">Details</a>
 													</td>
 													 
-													<td sec:authorize="hasAnyRole('ROLE_ADMIN','ROLE_UPDATE_FACTURES')" class="px-0">
-														<a th:href="@{/factures/edit(numero=${p.numero})}" id="btnEdit" 
+													<td class="px-0">
+														<a th:href="@{/editfacture(numero=${p.numero})}" id="btnEdit" 
 															class="btn-sm btn-primary text-light">
 															<i class="fa fa-edit"></i></a>
-														<a class="btn-sm btn-danger"  th:href="@{/factures/delete(numero=${p.numero})}" >
+														<a class="btn-sm btn-danger"  th:href="@{deletefacture(numero=${p.numero})}" >
 															<i class="fa fa-remove"></i></a>
 													</td>
 												</tr>

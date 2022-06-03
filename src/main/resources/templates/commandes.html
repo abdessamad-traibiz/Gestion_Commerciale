@@ -10,18 +10,18 @@
 
 <body>
 <div layout:fragment="body" >
-	 <script type="text/javascript">$("#page").append('Commandes')</script> 
+	 <script type="text/javascript">$("#page").append(' > Commandes')</script> 
 	 
 	<div >  
 			<div class="card"> 
-				<div class="card-header text-center">Commandes</div>
 				<div class="card-body"  > 
 					<div class="alert-warning text-success" th:if="${updateOk}" th:text="${updateOk}"></div>
 					<div class="alert-warning text-primary" th:if="${addOk}" th:text="${addOk}"></div>
 					<div class="alert-warning text-danger" th:if="${deleteOk}" th:text="${deleteOk}"></div>
- 					 
-					<div sec:authorize="hasAnyRole('ROLE_ADMIN','ROLE_UPDATE_COMMANDES')" class="col text-right mt-3" >
-						<a class="btn btn-info btn-sm" th:href="@{/commandes/nouveau}">
+ 					
+ 					
+					<div class="col text-right mt-3" >
+						<a class="btn btn-info btn-sm" th:href="@{/nouveaucommande}">
 						<i class="fa fa-plus text-light"></i> Ajouter
 						</a>
 					</div> 
@@ -100,7 +100,7 @@
 												</div>
 									      	</div>  
 								      	</div>
-						         		<div  sec:authorize="hasAnyRole('ROLE_ADMIN','ROLE_SHOW_COMMANDES')" class="col" id="commandesAchat"> 
+						         		<div class="col" id="commandesAchat"> 
 										<div  class="limit">
 								           <table class="table table-hover">
 												<thead>
@@ -121,14 +121,14 @@
 														<td th:if="${p.valide}">
 															<i class="fa fa-check text-success p-1" ></i></td> 
 														<td th:if="${p.valide}==false">
-															<a th:href="@{/factures/nouveau(numCmd=${p.numero})}" class="btn-info btn-sm">
+															<a th:href="@{/nouveaufacture(numCmd=${p.numero})}" class="btn-info btn-sm">
 																Facturer</a></td> 
 														<td class="px-0">
-															<a class="btn-success btn-sm" target="_blanc" th:href="@{/commandes/get(numero=${p.numero})}">Details</a>
+															<a class="btn-success btn-sm" target="_blanc" th:href="@{commande(numero=${p.numero})}">Details</a>
 														</td>
-														<td sec:authorize="hasAnyRole('ROLE_ADMIN','ROLE_UPDATE_COMMANDES')"> 
-															<a th:href="@{/commandes/edit(numero=${p.numero})}" id="btnEdit" class=" btn-primary btn-sm text-light"><i class="fa fa-edit"></i></a>
-															<a class=" btn-danger btn-sm"  th:href="@{/commandes/delete(numero=${p.numero})}" > <i class="fa fa-remove"></i></a>
+														<td> 
+															<a th:href="@{/editcommande(numero=${p.numero})}" id="btnEdit" class=" btn-primary btn-sm text-light"><i class="fa fa-edit"></i></a>
+															<a class=" btn-danger btn-sm"  th:href="@{deletecommande(numero=${p.numero})}" > <i class="fa fa-remove"></i></a>
 														</td>
 													</tr>
 												</tbody>
@@ -191,7 +191,7 @@
 											</div>
 								      	</div>  
 							      	</div>
-							 	<div  sec:authorize="hasAnyRole('ROLE_ADMIN','ROLE_SHOW_COMMANDES')" class="col" id="commandesVente"> 
+							 	<div class="col" id="commandesVente"> 
 									<div   class="limit">
 							           <table class="table table-hover ">
 											<thead>
@@ -213,16 +213,16 @@
 														<i class="fa fa-check text-success p-1" ></i>
 													</td> 
 													<td th:if="${p.valide}==false">
-																<a class="btn-info btn-sm" target="_blanc" th:href="@{/factures/nouveau(numCmd=${p.numero})}">Facturer</a>
+																<a class="btn-info btn-sm" target="_blanc" th:href="@{nouveaufacture(numCmd=${p.numero})}">Facturer</a>
 													</td>  
 													<td class="px-0"> 
-														<a class="btn-success btn-sm" target="_blanc" th:href="@{/commandes/get(numero=${p.numero})}">Details</a>
+														<a class="btn-success btn-sm" target="_blanc" th:href="@{commande(numero=${p.numero})}">Details</a>
 													</td>
 													 
-													<td sec:authorize="hasAnyRole('ROLE_ADMIN','ROLE_UPDATE_COMMANDES')" class="px-1" > 
-														<a th:href="@{/commandes/edit(numero=${p.numero})}" id="btnEdit" 
+													<td class="px-1"> 
+														<a th:href="@{/editcommande(numero=${p.numero})}" id="btnEdit" 
 															class=" btn-primary btn-sm text-light"> <i class="fa fa-edit"> </i></a>
-														<a class=" btn-danger btn-sm"  th:href="@{/commandes/delete(numero=${p.numero})}" > <i class="fa fa-remove"></i></a>
+														<a class=" btn-danger btn-sm"  th:href="@{deletecommande(numero=${p.numero})}" > <i class="fa fa-remove"></i></a>
 													</td>
 												</tr>
 											</tbody>

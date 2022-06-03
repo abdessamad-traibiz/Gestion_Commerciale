@@ -2,13 +2,10 @@ package com.emsi.web;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 
-import com.emsi.entities.Role;
-import com.emsi.entities.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -24,6 +21,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.emsi.dao.RoleRepository;
 import com.emsi.dao.UserRepository;
 import com.emsi.dao.UserRolesRepository;
+import com.emsi.entities.Role;
+import com.emsi.entities.User;
 import com.emsi.entities.UsersRoles;
 
 @Controller 
@@ -39,7 +38,7 @@ public class UserController
 			@RequestParam(name="p",defaultValue="0")int p,
 			@RequestParam(name="s",defaultValue="8")int s,
 			@RequestParam(name="mc",defaultValue="")String mc
-	){ 
+	){
 		Page<User> users = usrRep.findAll(new PageRequest(p, s));
 		model.addAttribute("users",users.getContent());
 		  
@@ -75,10 +74,7 @@ public class UserController
 	@RequestMapping(value="/users/update",method=RequestMethod.POST)
 	public String updateuser(@Valid User user, BindingResult result, Model model) 
 	{    
-		if((usrRep.findByUserName(user.getUsername())) ==null) { 
-			result.rejectValue("username", "error.user", "Cet utilisateur n'exist pas !");
-		}
-		else if(saveuser(user,result,model)) 
+		if(saveuser(user,result,model)) 
 			model.addAttribute("updateOk","user "+user.getUsername()+" est Mis à jour!");
 		else model.addAttribute("updateFailed",true);
 		
@@ -89,42 +85,33 @@ public class UserController
 	{
 		HashMap<String, Role> userRoles = (HashMap<String, Role>) session.getAttribute("userRoles");
 		if(userRoles==null || userRoles.size()==0)
-			result.rejectValue("roles", "error.user", "Vous devez affecter au moins une permission !.");
+			result.rejectValue("roles", "error.user", "Vous devez affecter au moins un role !.");
 		  
 		if (result.hasErrors()) 
 		{ 
 			model.addAttribute("user", user);
 			return false;
-		}  
-		
-		 
-		User tmp = usrRep.findByUserName(user.getUsername()); 
-		if(tmp!=null && tmp.getRoles()!=null) {
-			for(UsersRoles ur : tmp.getRoles()) { 
-				if(userRoles.get(ur.getRole().getRole())==null) 
-					urlRep.delete(ur);  
-			}
-		}
-		user.setRoles( new ArrayList<>() );
+		} 
 		  
 		user.setPassword( new BCryptPasswordEncoder().encode(user.getPassword()) );
-
-		user = usrRep.save(user);
+		usrRep.save(user);
+		 
+		if(user.getRoles()!=null) {
+			for(UsersRoles ur : user.getRoles()) 
+				if(userRoles.get(ur.getRole().getRole())==null) 
+					urlRep.delete(ur);  
+		}
+		user.setRoles( new ArrayList<>() );
 		
 		for(Role r : userRoles.values())
-		{ 
-			UsersRoles ur = urlRep.findByRoleAndUser(r.getRole(), user.getUsername());
-			if(ur==null) {
-				ur = new UsersRoles();
-				ur.setUser(user);
-				ur.setRole(r);
-			}
+		{
+			UsersRoles ur = new UsersRoles();
+			ur.setUser(user);
+			ur.setRole(r);
 			ur = urlRep.save(ur);
 			user.getRoles().add(ur);
 		}
-		user = usrRep.save(user);
-		
-		clearRoles();
+		usrRep.save(user);
 		return true;
 	}
 	
@@ -137,44 +124,50 @@ public class UserController
 	}
 	
 	@RequestMapping(value="/users/get", method=RequestMethod.POST,produces = "application/json")
-	public @ResponseBody User getuser(@RequestParam(name="username")String username) 
+	public @ResponseBody HashMap getuser(@RequestParam(name="username")String username) 
 	{    
-		return usrRep.findByUserName(username);  
+		User u = usrRep.findByUserName(username);  
+		if(u!=null) {
+			HashMap<String, String> hmu = new HashMap<String, String>() {{
+				put("username", u.getUsername());
+				put("active", u.getActive().toString());
+			}};
+			return hmu;
+		} 
+		return null;
 	}
 	
 	@RequestMapping(value="/users/storeuserrole", method=RequestMethod.POST,produces = "application/json")
 	public @ResponseBody String[] storeuserrole(@RequestParam(name="role")String r) 
 	{     
 		Role role = rolRep.findByRole(r);  
-		if(role!=null) 
-		{ 
+		if(role!=null) {
 			HashMap<String, Role> userRoles = (HashMap<String, Role>) session.getAttribute("userRoles");
 			if(userRoles == null) userRoles = new HashMap<>();
-			userRoles.put(role.getRole(), role); 
+			userRoles.put(role.getRole(), role);
+			System.err.println(userRoles);
 			session.setAttribute("userRoles", userRoles);
-			return new String[] {}; 
+			return new String[] {};
 		} 
 		return new String[] {"Role n'existe pas !"};
 	} 
 	
 	@RequestMapping(value="/users/removeuserrole", method=RequestMethod.POST,produces = "application/json")
-	public @ResponseBody HashMap removeuserrole(@RequestParam(name="role", defaultValue="")String r) 
+	public @ResponseBody HashMap removeuserrole(@RequestParam(name="role", defaultValue="")String r,
+			@RequestParam(name="id", defaultValue="")String id) 
 	{    
 		HashMap<String, Role> userRoles = (HashMap<String, Role>) session.getAttribute("userRoles");
-		if(userRoles != null && !r.isEmpty()) 
-				 userRoles.remove(r);  
+		if(userRoles != null) {
+			try {
+				if(!r.isEmpty())userRoles.remove(r);
+				if(!id.isEmpty())userRoles.remove(rolRep.findByIdRole(Long.valueOf(id)).getRole());
+			} 
+			catch (Exception e) {}  
+		} 
 		return new HashMap();
-	}
+	} 
 	
-	@RequestMapping(value="/users/clearroles", method=RequestMethod.POST)
-	public void clearRoles() 
-	{    
-		HashMap<String, Role> userRoles = (HashMap<String, Role>) session.getAttribute("userRoles");
-		if(userRoles != null) {userRoles.clear();}  
-	}
-	 
-	
-	@RequestMapping(value="/users/updaterolee", method=RequestMethod.POST,produces = "application/json")
+	@RequestMapping(value="/users/updaterole", method=RequestMethod.POST,produces = "application/json")
 	public @ResponseBody String[] updaterole(@RequestParam(name="id")Long id,@RequestParam(name="newrole")String nr) 
 	{    
 		if(nr.length()<=3) return new String[] {"Le role doit etre au moins 4c."};
@@ -195,39 +188,10 @@ public class UserController
 		return new String[] {"",ro.getId()+""};
 	}
 	
-	@RequestMapping(value="/users/updaterole", method=RequestMethod.POST)
-	public String updateRole(Model m,@RequestParam("id")Long id,@RequestParam("name")String name,@RequestParam("des")String des) 
-	{         
-		Role r = rolRep.findByIdAndName(id, name);  
-		if(r==null) m.addAttribute("updateFailed","Le role n'existe pas !");
-		if(des.length()<=2) m.addAttribute("updateDes","la designation doit etre au minimum 3c.");
-		if(r!=null&&des.length()>2) {
-			rolRep.save(r); 
-			m.addAttribute("updateDesOk","Designation est modifié !");
-		}
-		return getRoles(m);
-	}
-	
 	@RequestMapping(value="/users/deleterole", method=RequestMethod.POST,produces = "application/json")
 	public @ResponseBody String[] addrole(@RequestParam(name="id")Long id) 
 	{       
-		//rolRep.delete(new Role(id,"")); 
+		rolRep.delete(new Role(id,"")); 
 		return new String[] {};
 	}
-	
-	
-
-	@RequestMapping("/roles") public String getRoles(Model model)
-	{
-		List<Role> roles = rolRep.findAll();
-		model.addAttribute("roles",roles);  
-		return "roles";
-	} 
-	
-	
-	@RequestMapping("/color") public @ResponseBody String color(@RequestParam(name="c",defaultValue="1")Integer c)
-	{
-		if(c==0) return ".montheme{background-color: #343a40 !important;}";
-		else return ".montheme{background-color: #FFF;}";
-	} 
 }

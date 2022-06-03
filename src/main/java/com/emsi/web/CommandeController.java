@@ -9,8 +9,6 @@ import java.util.HashMap;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 
-import com.emsi.entities.LigneCommande;
-import com.emsi.entities.Produit;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page; 
 import org.springframework.stereotype.Controller; 
@@ -25,6 +23,8 @@ import com.emsi.entities.Client;
 import com.emsi.entities.Commande;
 import com.emsi.entities.Dossier;
 import com.emsi.entities.Fournisseur;
+import com.emsi.entities.LigneCommande;
+import com.emsi.entities.Produit;
 import com.emsi.imetier.IClientMetier;
 import com.emsi.imetier.ICommandeMetier;
 import com.emsi.imetier.IFournisseurMetier;
@@ -189,7 +189,7 @@ public class CommandeController
 
  	
  	
- 	@RequestMapping(value="/commandes/get")
+ 	@RequestMapping(value="/commande")
 	public String afficherCommande(Model model, @RequestParam(name="numero",defaultValue="0")Long numero) 
 	{     
  		Commande cmd = metierCommande.getCommande(numero);
@@ -199,7 +199,7 @@ public class CommandeController
 		return "commande";
 	}
 	
-	@RequestMapping(value="/commandes/nouveau")
+	@RequestMapping(value="/nouveaucommande")
 	public String nouveaucommande(Model model) 
 	{     
 		if(!model.containsAttribute("commande")) model.addAttribute("commande", new Commande()); 
@@ -208,14 +208,14 @@ public class CommandeController
 		model.addAttribute("fournisseurs", metierFournisseur.getFournisseurs());
 		model.addAttribute("clients",      metierClient.getClients());
 		
-		HashMap<String, LigneCommande> lcs = (HashMap<String,LigneCommande>)session.getAttribute("lcs");
+		HashMap<String,LigneCommande> lcs = (HashMap<String,LigneCommande>)session.getAttribute("lcs");
 		if(lcs==null) lcs = new HashMap<String,LigneCommande>(); 
 		model.addAttribute("lcs", lcs.values());
 		
 		return "nouveaucommande";
 	}
 	
-	@RequestMapping(value="/commandes/commander")
+	@RequestMapping(value="/commanderproduit")
 	public String commanderproduit(Model model,@RequestParam(name="ref",defaultValue="0")String ref) 
 	{     
 		model.addAttribute("commande", new Commande()); 
@@ -235,7 +235,7 @@ public class CommandeController
 		return "nouveaucommande";
 	} 
 	   
-	@RequestMapping(value= {"/commandes/add"}, method=RequestMethod.POST)
+	@RequestMapping(value= {"/addcommande"}, method=RequestMethod.POST)
 	public String addCommande(@Valid Commande commande, BindingResult result, Model model) 
 	{    	 
 		HashMap<String,LigneCommande> lcs = (HashMap<String,LigneCommande>)session.getAttribute("lcs");
@@ -269,10 +269,10 @@ public class CommandeController
 		model.addAttribute("addOk","Commande NUM"+commande.getNumero()+" est ajouté !");
 		model.addAttribute("commande",commande);
 		
-		return "redirect:/commandes/get?numero="+commande.getNumero();
+		return "redirect:/commande?numero="+commande.getNumero();
 	}
 	
-	@RequestMapping(value="/commandes/edit",method=RequestMethod.GET)
+	@RequestMapping(value="/editcommande",method=RequestMethod.GET)
 	public String editCommande(Model model, @RequestParam(name="numero",defaultValue="0")Long numero) 
 	{    
 		if(!model.containsAttribute("commande"))
@@ -288,7 +288,7 @@ public class CommandeController
 		return "editcommande";
 	} 
 	 
-	@RequestMapping(value="/commandes/update",method=RequestMethod.POST)
+	@RequestMapping(value="/updatecommande",method=RequestMethod.POST)
 	public String updateCommande(Model model, 
 			@RequestParam(name="numero",defaultValue="0")Long numero,
 			@RequestParam(name="dateCommande",defaultValue="0")String dateCommandeString,
@@ -330,7 +330,7 @@ public class CommandeController
 		return editCommande(model,numero);
 	}
 	  
-	@RequestMapping(value="/commandes/delete")
+	@RequestMapping(value="/deletecommande")
 	public String deleteCommande(Model model,@RequestParam(name="numero",defaultValue="0")Long num) 
 	{  
 		metierCommande.deleteCommande(num);
@@ -338,7 +338,7 @@ public class CommandeController
 		return index(model,0,0,8,"","","","","","","","");
 	}
 	
-	@RequestMapping(value="/commandes/get", method=RequestMethod.POST,produces = "application/json")
+	@RequestMapping(value="/getcommande", method=RequestMethod.POST,produces = "application/json")
 	public @ResponseBody Commande getcommande(@RequestParam(name="numero")Long numero) 
 	{  
 		Commande p = metierCommande.getCommande(numero);  
@@ -352,7 +352,7 @@ public class CommandeController
 	
 	//**************************** Lignes commandes ***************************
 	
-	@RequestMapping(value="/commandes/ligne/add",method=RequestMethod.POST)
+	@RequestMapping(value="/addlignecommande",method=RequestMethod.POST)
 	public String addlignecommande(Model model, 
 			@RequestParam(name="produit",defaultValue="0")String ref,
 			@RequestParam(name="commande",defaultValue="0")Long numero,
@@ -389,7 +389,7 @@ public class CommandeController
 		return editCommande(model,numero);
 	}
 	
-	@RequestMapping(value="/commandes/ligne/update",method=RequestMethod.POST)
+	@RequestMapping(value="/updatelignecommande",method=RequestMethod.POST)
 	public String updatelignecommande( Model model, 
 			@RequestParam(name="produit",defaultValue="0")String ref,
 			@RequestParam(name="commande",defaultValue="0")Long numero,
@@ -416,7 +416,7 @@ public class CommandeController
 		return editCommande(model,lc.getCommande().getNumero());
 	}
 	  
-	@RequestMapping(value="/commandes/ligne/delete")
+	@RequestMapping(value="/deletelignecommande")
 	public String deletelignecommande(Model model,@RequestParam(name="id",defaultValue="0")Long id,@RequestParam(name="numCommande",defaultValue="0")Long numCommande) 
 	{  
 		LigneCommande lc  = metierLigneCommande.getLigneCommande(id);
@@ -425,7 +425,7 @@ public class CommandeController
 		return editCommande(model,numCommande);
 	}
 	
-	@RequestMapping(value="/commandes/ligne/store", method=RequestMethod.POST,produces = "application/json")
+	@RequestMapping(value="/storelignecommande", method=RequestMethod.POST,produces = "application/json")
 	public @ResponseBody Result storelignecommande(  
 			@RequestParam(name="refProduit",defaultValue="0")String refProduit, 
 			@RequestParam(name="qte",defaultValue="0")Integer qte
@@ -455,7 +455,7 @@ public class CommandeController
 		Result(String m,String q, String p){qte=q; message=m;produit=p;}
 	}
 	
-	@RequestMapping(value="/commandes/ligne/remove", method=RequestMethod.POST,produces = "text/html")
+	@RequestMapping(value="/removelignecommande", method=RequestMethod.POST,produces = "text/html")
 	public @ResponseBody String removelignecommande(@RequestParam(name="ref",defaultValue="0")String ref) 
 	{   
 		HashMap<String,LigneCommande> lcs = (HashMap<String,LigneCommande>)session.getAttribute("lcs");

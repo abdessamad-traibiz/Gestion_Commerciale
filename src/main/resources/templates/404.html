@@ -1,18 +1,16 @@
 <!DOCTYPE html>
 
-<html  	xmlns:th="http://www.thymeleaf.org" >
- 	<link rel="stylesheet" th:href="@{/resources/css/bootstrap.css}" type="text/css">
- 
+<html  	xmlns:th="http://www.thymeleaf.org"
+		xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	    layout:decorator="template">
+
 
 <head></head>
-<body class="  bg-dark">
-<div  >
-	 <script th:inline="javascript" type="text/javascript">
-	 	$("#page").append('<img src="'+[[@{/resources/img/att.png}]]+'" height="18px"/>')
-	 </script>
+<body>
+<div layout:fragment="body" >
 
 
-  <div class="py-5">
+  <div class="py-5  bg-dark">
     <div class="container">
       <div class="row">
         <div class="col-md-3" >
@@ -21,11 +19,9 @@
         <div class="col-md-6">
           <div class="card text-center p-5 bg-dark text-light" style="border:none">
             <div class="card-body">
-            	<img alt="Page n'exist pas !" th:src="@{/resources/img/att.png}">
+            	<img alt="" th:src="@{/resources/img/att.png}">
               <h1 class="mb-4">404</h1>
               <h3>Page introuvable !</h3>
-              <a class="h4 text-light mx-2 btn-sm btn-primary" onclick='history.back();'  href="javascript:void(0)">Retour</a>
-              <a class="h4 text-light mx-2 btn-sm btn-primary" th:href="@{/}">Accueil</a>
             </div>
           </div>
         </div>

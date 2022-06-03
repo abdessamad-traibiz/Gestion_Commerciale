@@ -4,7 +4,7 @@ for(var i=0;i<12;i++)
 
 var charts = new Array();
 function createCharts(nom,subnom,data, idDiv, axisx, axisy, type)
-{console.log(data);
+{
 	if(type==null) type = 'line';
 	var fsize = "8";
 	var visitChart = new FusionCharts({
@@ -90,7 +90,7 @@ function getStatistiques()
 	var pr = document.fs.p.value;  
 	 
 	$.ajax({ 
-		url : wwwpath+"/statistiques/getstatistiques", 
+		url : wwwpath+"/getstatistiques", 
 		data : { d:document.fs.d.value, j: jr, m: mo, a: an, p:pr }, 
 		type : "POST",
 		dataType : "json",  

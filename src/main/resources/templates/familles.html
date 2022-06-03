@@ -79,7 +79,7 @@
 		$("#btnUpdateFamille").click(
 			function(){  
 				$.ajax({ 
-					url : wwwpath+"/familles/save", 
+					url : wwwpath+"/savefamille", 
 					data : {    code : $('#codeFamille').val(),
 						        designation : $('#designation1').val() },
 					type : "POST",
@@ -97,7 +97,7 @@
 		$("#btnDeleteFamille").click(
 			function(){  
 				$.ajax({ 
-					url : wwwpath+"/familles/delete", 
+					url : wwwpath+"/deletefamille", 
 					data : {    code : $('#codeFamille').val()}, 
 					type : "POST",
 					dataType : "json",  
@@ -115,7 +115,7 @@
 		$("#btnAddFamille").click(
 			function(){  
 				$.ajax({ 
-					url : wwwpath+"/familles/save", 
+					url : wwwpath+"/savefamille", 
 					data : { code:"", designation : $('#designation2').val()}, 
 					type : "POST",
 					dataType : "json",  

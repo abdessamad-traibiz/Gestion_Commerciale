@@ -1,17 +1,16 @@
 <!DOCTYPE html>
 
-<html  	xmlns:th="http://www.thymeleaf.org">
- 	<link rel="stylesheet" th:href="@{/resources/css/bootstrap.css}" type="text/css">
+<html  	xmlns:th="http://www.thymeleaf.org"
+		xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	    layout:decorator="template">
 
 
 <head><meta charset="utf-8"></head>
-<body class="bg-dark">
-<div>
-	 <script th:inline="javascript" type="text/javascript">
-	 	$("#page").append('<img src="'+[[@{/resources/img/stop.png}]]+'" height="18px"/>')
-	 </script>
- 
-  <div class="py-5">
+<body>
+<div layout:fragment="body">
+
+
+  <div class="py-5 bg-dark">
     <div class="container">
       <div class="row">
         <div class="col-md-3"> </div>
@@ -21,8 +20,6 @@
             	<img th:src="@{/resources/img/stop.png}">
               <h1>403</h1>
               <h3>Vous n'avez pas le droit d'acceder à ce ressource</h3>
-              <a class="h4 text-light mx-2 btn-sm btn-primary" onclick='history.back();'  href="javascript:void(0)">Retour</a>
-              <a class="h4 text-light mx-2 btn-sm btn-primary" th:href="@{/}">Accueil</a>
             </div>
           </div>
         </div>

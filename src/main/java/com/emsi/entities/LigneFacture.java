@@ -8,9 +8,6 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
-import org.hibernate.annotations.NotFound;
-import org.hibernate.annotations.NotFoundAction;
-
 
 @Entity
 public class LigneFacture  implements Serializable
@@ -24,7 +21,6 @@ public class LigneFacture  implements Serializable
 	
 	@ManyToOne
 	@JoinColumn(name="REF_PRODUIT")
-	@NotFound(action = NotFoundAction.IGNORE)
 	private Produit produit;
 	
 	private int qte;

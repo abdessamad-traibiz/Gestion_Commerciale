@@ -106,7 +106,7 @@
 	function updateTva(id, des, taux)
 	{   
 		$.ajax({ 
-			url : wwwpath+"/tva/save", 
+			url : wwwpath+"/savetva", 
 			data : {    code : id,
 						designation : des,
 						taux : taux
@@ -124,7 +124,7 @@
 	
 	function deleteTva(id){  
 		$.ajax({ 
-			url : wwwpath+"/tva/delete", 
+			url : wwwpath+"/deletetva", 
 			data : {    code : id}, 
 			type : "POST",
 			dataType : "json",  
@@ -142,7 +142,7 @@
 		$("#btnAddTva").click(
 			function(){  
 				$.ajax({ 
-					url : wwwpath+"/tva/save", 
+					url : wwwpath+"/savetva", 
 					data : { 	code:"", 
 								designation : $('#designationNouveauTva').val(),
 								taux : $('#tauxNouveauTva').val()

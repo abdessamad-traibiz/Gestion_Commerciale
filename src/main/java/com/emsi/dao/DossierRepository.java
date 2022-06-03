@@ -2,7 +2,8 @@ package com.emsi.dao;
   
 
 import java.util.Date;
- 
+
+import com.emsi.entities.Dossier;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -10,11 +11,9 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
-import com.emsi.entities.Dossier;
-
 
 @Repository
-public interface DossierRepository extends JpaRepository<Dossier, Long>  
+public interface DossierRepository extends JpaRepository<Dossier, Long>
 {  
 	@Query("select p from Dossier p where p.nom like :n order by p.dateCreation desc")
 	public Page<Dossier> findAll(

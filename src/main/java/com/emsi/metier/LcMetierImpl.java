@@ -3,12 +3,12 @@ package com.emsi.metier;
 
 import javax.transaction.Transactional;
 
-import com.emsi.entities.LigneCommande;
 import com.emsi.imetier.ILcMetier;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.emsi.dao.LcRepository;
+import com.emsi.entities.LigneCommande;
 
 
 @Service
